@@ -2,10 +2,12 @@
     [layers]="layers"
     [visible]="visible"
     [clustering]="clustering$ | async"
+    [heatmap]="heatmap$ | async"
     [numbers]="numbers$ | async"
     [circles]="circles$ | async"
     (visibilityToggled)="toggleVisibility()"
     (clusteringToggled)="toggleClustering()"
+    (heatmapToggled)="toggleHeatmap()"
     (circlesToggled)="toggleCircles()"
     (numbersToggled)="toggleNumbers()"
 ></osem-map-options>

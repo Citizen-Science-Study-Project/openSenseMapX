@@ -1,11 +1,13 @@
-<osem-nav-right 
+<osem-nav-right
     [settings]="settings"
     [language]="language$ | async"
     [theme]="theme$ | async"
     [user]="user$ | async"
     [clustering]="clustering$ | async"
+    [heatmap]="heatmap$ | async"
     (themeToggled)="toggleTheme($event)"
     (languageToggled)="setLanguage($event)"
     (settingsToggled)="toggleSettings()"
     (clusteringToggled)="toggleClustering()"
+    (heatmapToggled)="toggleHeatmap()"
 ></osem-nav-right>

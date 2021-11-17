@@ -13,11 +13,13 @@ export class MapOptionsComponent implements OnInit {
   @Input() layers;
   @Input() visible;
   @Input() clustering;
+  @Input() heatmap;
   @Input() numbers;
   @Input() circles;
 
   @Output() visibilityToggled = new EventEmitter();
   @Output() clusteringToggled = new EventEmitter();
+  @Output() heatmapToggled = new EventEmitter();
   @Output() numbersToggled = new EventEmitter();
   @Output() circlesToggled = new EventEmitter();
 
@@ -32,6 +34,10 @@ export class MapOptionsComponent implements OnInit {
 
   toggleClustering(){
     this.clusteringToggled.emit();
+  }
+
+  toggleHeatmap(){
+    this.heatmapToggled.emit();
   }
 
   toggleNumbers(){

@@ -14,6 +14,13 @@
             </div>
             <span>{{'CLUSTERING' | translate}}</span>
         </div>
+        <div class="checkbox-container mouse-active" (click)="toggleHeatmap()" title="{{'TOGGLE_HEATMAP' | translate}}">
+            <div class="checkbox">
+                <i *ngIf="!heatmap" class="fa fa-square-o"></i>
+                <i *ngIf="heatmap" class="fa fa-check-square-o checked"></i>
+            </div>
+            <span>{{'HEATMAP' | translate}}</span>
+        </div>
         <div class="checkbox-container osem-disabled" title="{{'TOGGLE_NUMBERS' | translate}}">
             <div class="checkbox">
                 <i *ngIf="!numbers" class="fa fa-square-o not-checked"></i>

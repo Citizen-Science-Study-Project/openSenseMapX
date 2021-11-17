@@ -18,6 +18,7 @@ export class NavContainerComponent implements OnInit {
   theme$ = this.uiQuery.selectTheme$;
   user$ = this.sessionQuery.user$;
   clustering$ = this.uiQuery.selectClustering$;
+  heatmap$ = this.uiQuery.selectHeatmap$;
 
   constructor(
     private themeService: ThemeService,
@@ -42,6 +43,9 @@ export class NavContainerComponent implements OnInit {
   }
   toggleClustering(){
     this.uiService.toggleClustering();
+  }
+  toggleHeatmap(){
+    this.uiService.toggleHeatmap();
   }
 
 }

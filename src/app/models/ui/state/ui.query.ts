@@ -18,6 +18,7 @@ export class UiQuery extends Query<UiState> {
   selectSearchResults$ = this.select(state => state.searchResults);
   selectLocationAutocompleteResults$ = this.select(state => state.locationAutocompleteResults);
   selectClustering$ = this.select(state => state.clustering);
+  selectHeatmap$ = this.select(state => state.heatmap);
   selectNumbers$ = this.select(state => state.numbers);
   selectCircles$ = this.select(state => state.circles);
   selectCluster$ = this.select(state => state.cluster);
@@ -26,7 +27,7 @@ export class UiQuery extends Query<UiState> {
   selectReloadMapData$ = this.select(state => state.reloadMapData);
   selectShowDateModal$ = this.select(state => state.showDateModal);
   selectStats$ = this.select(state => state.stats);
-  
+
   selectLanguage$ = this.select(state => state.language);
   selectTheme$ = this.select(state => state.theme);
   selectActiveTab$ = this.select(state => state.activeTab);

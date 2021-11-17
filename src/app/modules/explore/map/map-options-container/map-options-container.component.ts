@@ -13,6 +13,7 @@ export class MapOptionsContainerComponent implements OnInit {
   visible = false;
 
   clustering$ = this.uiQuery.selectClustering$;
+  heatmap$ = this.uiQuery.selectHeatmap$;
   circles$ = this.uiQuery.selectCircles$;
   numbers$ = this.uiQuery.selectNumbers$;
 
@@ -29,6 +30,10 @@ export class MapOptionsContainerComponent implements OnInit {
 
   toggleClustering(){
     this.uiService.toggleClustering();
+  }
+
+  toggleHeatmap(){
+    this.uiService.toggleHeatmap();
   }
 
   toggleCircles(){

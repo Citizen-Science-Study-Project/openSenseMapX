@@ -23,7 +23,7 @@
 
 
 <div id="settings" class="osem-box-shadow-basic" *ngIf="settings" [@slideInOutMenu]>
-    
+
     <h2 class="underline pt-3">{{'PAGE_SETTINGS' | translate}}</h2>
     <div class="option-container pt-4">
         <div class="option-inner">
@@ -53,6 +53,13 @@
                 <i *ngIf="clustering" class="fa fa-check-square"></i>
             </div>
             <span>{{'CLUSTERING' | translate}}</span>
+        </div>
+        <div class="checkbox-container mouse-active py-5" (click)="toggleHeatmap()" title="{{'TOGGLE_HEATMAP' | translate}}">
+            <div class="checkbox">
+                <i *ngIf="heatmap" class="fa fa-square"></i>
+                <i *ngIf="!heatmap" class="fa fa-check-square"></i>
+            </div>
+            <span>{{'HEATMAP' | translate}}</span>
         </div>
     </div>
 

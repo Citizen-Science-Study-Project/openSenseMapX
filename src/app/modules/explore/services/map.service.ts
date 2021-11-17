@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { Map, NavigationControl } from 'mapbox-gl';
 import * as mapboxgl from 'mapbox-gl';
+import { Map, NavigationControl } from 'mapbox-gl';
 
 import { environment } from '../../../../environments/environment';
 import { UiService } from 'src/app/models/ui/state/ui.service';
@@ -9,12 +9,13 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { UiQuery } from 'src/app/models/ui/state/ui.query';
 
-import { arrayRemove, extractDateSteps, positionPopup } from '../box/osem-line-chart/helper/helpers';
+import { extractDateSteps, positionPopup } from '../box/osem-line-chart/helper/helpers';
 import { BoxService } from 'src/app/models/box/state/box.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BoxQuery } from 'src/app/models/box/state/box.query';
 import { withLatestFrom } from 'rxjs/operators';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
+import { initialHeatmapLayer } from '../../../models/ui/state/layers';
 
 
 @Injectable({
@@ -24,12 +25,13 @@ export class MapService {
 
   map;  // the map element (gets initilisaed on page load)
 
-  worldData:BehaviorSubject<any>; // all the live Data as geojson, gets pulled on page load
+  worldData: BehaviorSubject<any>; // all the live Data as geojson, gets pulled on page load
   selectedPheno$ = this.uiQuery.selectSelectedPheno$;
 
   baseLayer$ = this.uiQuery.select(ent => ent.baseLayer);
   baseLayerBehaviour$ = new BehaviorSubject<any>(null);
   clusterLayers$ = this.uiQuery.select(ent => ent.clusterLayers);
+  heatmapLayer$ = this.uiQuery.select(ent => ent.heatmapLayer);
   numbers$ = this.uiQuery.selectNumbers$;
 
   activeBox$ = this.boxQuery.selectActiveId();
@@ -37,6 +39,7 @@ export class MapService {
   compareTo$ = this.boxQuery.selectCompareTo$;
 
   clustering$ = this.uiQuery.selectClustering$;
+  heatmap$ = this.uiQuery.selectHeatmap$;
   selectedDate$ = this.uiQuery.selectSelectedDate$;
 
   compareModus$ = this.boxQuery.selectCompareModus$;
@@ -49,14 +52,16 @@ export class MapService {
   dataSub;
   baseLayerSub;
   clusterLayerSub;
+  heatmapLayerSub;
   activeBoxSub;
   compareToSub;
   clusteringSub;
+  heatmapSub;
   compareModusSub;
   numbersSub;
 
   clusterMouseleaveFunctionSave;
-  
+
   mouseLeaveFunction;
   activatePopupTimer;
   deactivatePopupTimer;
@@ -69,14 +74,14 @@ export class MapService {
     private boxQuery: BoxQuery,
     private router: Router,
     private activatedRoute: ActivatedRoute
-  ) { 
+  ){
     this.worldData = new BehaviorSubject(false);
   }
 
   // initialize the map, TODO: Dynamic start point
-  generateMap(elementName) {
+  generateMap(elementName){
 
-    let that = this;
+    const that = this;
 
     (mapboxgl as typeof mapboxgl).accessToken = environment.mapbox_token;
     this.map = new Map({
@@ -89,16 +94,16 @@ export class MapService {
 
     // disable map rotation using right click + drag
     this.map.dragRotate.disable();
- 
+
     // disable map rotation using touch rotation gesture
     this.map.touchZoomRotate.disableRotation();
 
     this.map.addControl(new NavigationControl());
 
-    //once the map is laoded fetch the data (maybe move this elsewhere for faster load time), TODO: fetch from API not static file
+    // once the map is laoded fetch the data (maybe move this elsewhere for faster load time), TODO: fetch from API not static file
     this.map.once('load', function(){
       that.fetchData('/assets/data/world.json');
-    })
+    });
   }
 
   // fetch the data and add the sources when its done
@@ -106,13 +111,13 @@ export class MapService {
     this.http.get(url).subscribe(res => {
       this.worldData.next(res);
       this.addMapSources();
-    })
+    });
   }
 
-  //adds the map sources for cluster and no cluster layers
+  // adds the map sources for cluster and no cluster layers
   addMapSources(){
- 
-    let that = this;
+
+    const that = this;
 
     if(this.dataSub){
       this.dataSub.unsubscribe();
@@ -127,20 +132,21 @@ export class MapService {
           filteredData = this.filterData(this.worldData.getValue(), false, res[1]);
         } else {
           filteredData = this.filterData(this.worldData.getValue(), res[0].title, res[1]);
-        } 
+        }
         if(this.map.getLayer('boxes-cluster')){
-          this.map.removeLayer('boxes-no-cluster')
-          this.map.removeLayer('boxes-cluster')
-          this.map.removeLayer('cluster-number-layer')
-          this.map.removeLayer('no-cluster-number')
+          this.map.removeLayer('boxes-no-cluster');
+          this.map.removeLayer('boxes-cluster');
+          this.map.removeLayer('cluster-number-layer');
+          this.map.removeLayer('no-cluster-number');
         }
         if(this.map.getSource('cluster-boxes')){
           this.map.removeSource('cluster-boxes');
         }
+
         if(!this.map.getSource('boxes')){
           this.map.addSource('boxes', {
-            'type': 'geojson',
-            'data': filteredData,
+            type: 'geojson',
+            data: filteredData,
           });
           // console.log("addsource")
         } else {
@@ -153,16 +159,25 @@ export class MapService {
             this.map.getSource('boxes').setData(filteredData);
           }
         }
+
         this.map.addSource('cluster-boxes', {
-          'type': 'geojson',
-          'data': filteredData,
-          'cluster': true,
-          'clusterRadius': 65,
-          'clusterProperties': { 
-            [res[0].title]: ['+', ['case', ["!=", null, [ "get", res[0].title, ["object", ["get", "live", ["object", ["get", "sensors"]]]]]], [ "get", res[0].title, ["object", ["get", "live", ["object", ["get", "sensors"]]]]], null]],
+          type: 'geojson',
+          data: filteredData,
+          cluster: true,
+          clusterRadius: 65,
+          clusterProperties: {
+            [res[0].title]: ['+', ['case', ['!=', null, ['get', res[0].title, ['object', ['get', 'live', ['object', ['get', 'sensors']]]]]], ['get', res[0].title, ['object', ['get', 'live', ['object', ['get', 'sensors']]]]], null]],
           }
-        })
-        
+        });
+
+        console.log('res', res)
+        // if(this.map.getLayer('boxes-heatmap')){
+        //   this.map.removeLayer('boxes-heatmap');
+        // }
+        this.map.addLayer(
+          initialHeatmapLayer
+        );
+
       }
       // when the sources are added subscribe to the selected Pheno for the displaying of the right layers
       this.map.once('sourcedata', function(){
@@ -172,52 +187,63 @@ export class MapService {
     });
   }
 
-  //subscribes to the layers in the ui-service.
+  // subscribes to the layers in the ui-service.
   subscribeToLayers(){
     if(this.baseLayerSub){
       this.baseLayerSub.unsubscribe();
       this.clusterLayerSub.unsubscribe();
+      this.heatmapLayerSub.unsubscribe();
       this.activeBoxSub.unsubscribe();
       this.compareToSub.unsubscribe();
       this.clusteringSub.unsubscribe();
+      this.heatmapSub.unsubscribe();
       this.compareModusSub.unsubscribe();
       this.numbersSub.unsubscribe();
     }
 
-    let that = this;
+    const that = this;
     // console.log("SUBSCRIBE HERE")
     this.baseLayerSub = this.baseLayer$.subscribe(res => {
       // console.log("LAYER TO DRAW:",res)
       this.baseLayerBehaviour$.next(res);
       that.drawBaseLayer(res);
     });
-    
+
+    this.heatmapLayerSub = this.heatmapLayer$.subscribe(res => {
+      that.drawHeatmapLayer(res);
+    });
+
     this.clusterLayerSub = this.clusterLayers$.subscribe(res => {
       that.drawClusterLayers(res);
     });
 
     this.activeBoxSub = this.activeBox$.pipe(withLatestFrom(this.theme$)).subscribe(res => {
-      if(res)
+      if(res){
         this.updateActiveLayer(res[0], res[1]);
+      }
     });
 
     this.compareToSub = this.compareTo$.pipe(withLatestFrom(this.theme$)).subscribe(res => {
-      if(res.length > 0)
+      if(res.length > 0){
         this.updateActiveLayerCompare(res[0], res[1]);
+      }
     });
     this.clusteringSub = this.clustering$.pipe(withLatestFrom(this.selectedDate$)).subscribe(res => {
       this.setClustering(res[0], res[1]);
-    })
+    });
+    this.heatmapSub = this.heatmap$.pipe().subscribe(res => {
+      this.setHeatmap(res);
+    });
 
     this.compareModusSub = this.compareModus$.pipe(withLatestFrom(this.compareTo$)).subscribe(res => {
       this.compareModus = res[0];
-      if (this.map && this.map.getLayer('base-layer')) {
-        if (res[0]) {
+      if(this.map && this.map.getLayer('base-layer')){
+        if(res[0]){
           this.map.off('mouseenter', 'base-layer', this.baseMouseenterFunction);
           this.map.off('click', 'base-layer', this.baseClickFunction);
           this.map.on('mouseenter', 'base-layer', this.compareMouseenterFunction);
           this.map.on('click', 'base-layer', this.compareClickFunction);
-         
+
           this.map.off('mouseenter', 'boxes-no-cluster', this.baseMouseenterFunction);
           this.map.off('click', 'boxes-no-cluster', this.baseClickFunction);
           this.map.on('mouseenter', 'boxes-no-cluster', this.compareMouseenterFunction);
@@ -227,27 +253,27 @@ export class MapService {
           this.map.off('mouseenter', 'base-layer', this.compareMouseenterFunction);
           this.map.on('mouseenter', 'base-layer', this.baseMouseenterFunction);
           this.map.on('click', 'base-layer', this.baseClickFunction);
-         
+
           this.map.off('click', 'boxes-no-cluster', this.compareClickFunction);
           this.map.off('mouseenter', 'boxes-no-cluster', this.compareMouseenterFunction);
           this.map.on('mouseenter', 'boxes-no-cluster', this.baseMouseenterFunction);
           this.map.on('click', 'boxes-no-cluster', this.baseClickFunction);
         }
 
-        if (res[1].length > 0) {
-          this.map.setFilter('active-layer', ["match", ["get", "_id"], res[1], true, false]);
+        if(res[1].length > 0){
+          this.map.setFilter('active-layer', ['match', ['get', '_id'], res[1], true, false]);
         }
       }
-    })
+    });
 
     this.numbersSub = this.numbers$.subscribe(res => {
       if(this.map && this.map.getLayer('number-layer')){
         this.map.setLayoutProperty('number-layer', 'visibility', res ? 'visible' : 'none');
 
       }
-    })
+    });
 
-    // this.dateRangeData$.subscribe(res => {  
+    // this.dateRangeData$.subscribe(res => {
     //   if(res){
     //     // if(!this.map.getSource('date-range-boxes')){
     //     //   this.map.addSource('date-range-boxes', {
@@ -276,27 +302,28 @@ export class MapService {
   }
 
   initLayersWithoutSub(){
-    this.drawBaseLayer(this.baseLayerBehaviour$.getValue())
+    this.drawBaseLayer(this.baseLayerBehaviour$.getValue());
   }
 
   drawBaseLayer(layer){
-    if (!this.map.getLayer(layer.id)) {
+    if(!this.map.getLayer(layer.id)){
       this.map.addLayer(layer);
 
-      if (this.map.getLayer('active-layer-text'))
+      if(this.map.getLayer('active-layer-text')){
         this.map.moveLayer(layer.id, 'active-layer-text');
+      }
 
     } else {
 
       this.map.setPaintProperty(layer.id, 'circle-color', layer.paint['circle-color']);
 
-      if (layer.filter) {
+      if(layer.filter){
         this.map.setFilter(layer.id, layer.filter);
       } else {
         this.map.setFilter(layer.id);
       }
     }
-    if (!this.map.getLayer('number-layer')) {
+    if(!this.map.getLayer('number-layer')){
       this.addNumberLayer();
       this.addPopup('base-layer');
     }
@@ -307,24 +334,49 @@ export class MapService {
 
   }
 
-  drawClusterLayers(layers) {
+  drawHeatmapLayer(layer){
+    if(!this.map.getLayer(layer.id)){
+      if(this.map.getLayer('active-layer-text')){
+        this.map.addLayer(layer, 'active-layer-text');
+      } else {
+        this.map.addLayer(layer);
+      }
+
+    } else {
+
+      // this.map.setPaintProperty(layer.id, 'circle-color', layer.paint['circle-color']);
+      this.map.setPaintProperty(layer.id, 'heatmap-color', layer.paint['circle-color']);
+      // this.map.setPaintProperty(layer.id, 'heatmap-color', layer.paint['heatmap-color']);
+
+      if(layer.filter){
+        this.map.setFilter(layer.id, layer.filter);
+      } else {
+        this.map.setFilter(layer.id);
+      }
+      if(layer.layout && layer.layout.visibility){
+        this.map.setLayoutProperty(layer.id, 'visibility', layer.layout.visibility);
+      }
+    }
+  }
+
+  drawClusterLayers(layers){
 
     if(this.map.getSource('cluster-boxes')){
 
       layers.forEach(layer => {
-  
-        if (!this.map.getLayer(layer.id)) {
-          if (this.map.getLayer('active-layer-text')){
+
+        if(!this.map.getLayer(layer.id)){
+          if(this.map.getLayer('active-layer-text')){
             this.map.addLayer(layer, 'active-layer-text');
           } else {
             this.map.addLayer(layer);
           }
-    
+
         } else {
-    
+
           this.map.setPaintProperty(layer.id, 'circle-color', layer.paint['circle-color']);
-    
-          if (layer.filter) {
+
+          if(layer.filter){
             this.map.setFilter(layer.id, layer.filter);
           } else {
             this.map.setFilter(layer.id);
@@ -334,15 +386,15 @@ export class MapService {
           }
         }
       });
-  
-      if (!this.map.getLayer('cluster-number-layer')) {
+
+      if(!this.map.getLayer('cluster-number-layer')){
         this.addClusterNumberLayers(layers);
-        this.addHoverCluster('boxes-cluster', layers[1]['paint']['circle-color'])
+        this.addHoverCluster('boxes-cluster', layers[1].paint['circle-color']);
         this.addPopup('boxes-no-cluster');
         this.addClusterClickFunction(layers[0].id);
       }
-      
-      let textField = ["concat", ['/',['round',[ '*', ['/', ["get", layers[0].paint['circle-color'][2][1][1]], ["get", "point_count"]], 100]],100], ""];
+
+      const textField = ['concat', ['/', ['round', ['*', ['/', ['get', layers[0].paint['circle-color'][2][1][1]], ['get', 'point_count']], 100]], 100], ''];
       this.map.setPaintProperty('no-cluster-number', 'text-color', layers[0].paint['circle-color']);
       this.map.setLayoutProperty('cluster-number-layer', 'text-field', textField);
       this.map.setLayoutProperty('no-cluster-number', 'text-field', layers[1].paint['circle-color'][2]);
@@ -350,38 +402,38 @@ export class MapService {
 
   }
 
-  //ACTIVE LAYERS
-  updateActiveLayer(id, theme) {
+  // ACTIVE LAYERS
+  updateActiveLayer(id, theme){
 
-    if (id !== undefined) {
+    if(id !== undefined){
       let paint;
-      if (theme === 'dark') {
+      if(theme === 'dark'){
         paint = {
           'text-color': '#f6f6f6',
           'text-halo-blur': 4,
           'text-halo-color': '#383838',
           'text-halo-width': 1
-        }
+        };
       } else {
         paint = {
           'text-color': '#383838',
           'text-halo-blur': 4,
           'text-halo-color': '#f6f6f4',
           'text-halo-width': 1
-        }
+        };
       }
-      if (!this.map.getLayer('active-layer')) {
+      if(!this.map.getLayer('active-layer')){
         this.map.addLayer({
-          'id': 'active-layer-text',
-          'type': 'symbol',
-          'source': 'boxes',
-          'filter': ["==", id, ["get", "_id"]],
-          "paint": paint,
-          "layout": {
-            "text-field": ['format', ["get", "name"], { 'font-scale': 1.2 }],
-            "text-variable-anchor": ["top"],
-            "text-offset": {
-              "stops": [
+          id: 'active-layer-text',
+          type: 'symbol',
+          source: 'boxes',
+          filter: ['==', id, ['get', '_id']],
+          paint,
+          layout: {
+            'text-field': ['format', ['get', 'name'], {'font-scale': 1.2}],
+            'text-variable-anchor': ['top'],
+            'text-offset': {
+              stops: [
                 [1, [0, 0.3]],
                 [8, [0, 0.8]],
                 [16, [0, 1.8]],
@@ -393,115 +445,115 @@ export class MapService {
             //   "DIN Offc Pro Medium",
             //   "Arial Unicode MS Bold"
             // ],
-            "text-size": 18
+            'text-size': 18
           }
         });
         this.map.addLayer({
-          'id': 'active-layer',
-          'type': 'circle',
-          'source': 'boxes',
-          'filter': ["==", id, ["get", "_id"]],
-          'paint': {
+          id: 'active-layer',
+          type: 'circle',
+          source: 'boxes',
+          filter: ['==', id, ['get', '_id']],
+          paint: {
             'circle-radius': {
-              'base': 1.75,
-              'stops': [[1, 10], [22, 580]]
+              base: 1.75,
+              stops: [[1, 10], [22, 580]]
             },
             'circle-blur': 0.6,
             // 'circle-stroke-width': 1,
             'circle-opacity': 0.6,
-            'circle-color': theme === 'dark' ? '#ffffff' :'#383838'
+            'circle-color': theme === 'dark' ? '#ffffff' : '#383838'
           }
         }, 'base-layer');
 
       } else {
 
-        this.map.setFilter('active-layer', ["==", id, ["get", "_id"]]);
-        this.map.setFilter('active-layer-text', ["==", id, ["get", "_id"]]);
+        this.map.setFilter('active-layer', ['==', id, ['get', '_id']]);
+        this.map.setFilter('active-layer-text', ['==', id, ['get', '_id']]);
       }
 
     }
   }
 
-  updateActiveLayerCompare(data, theme) {
-    if (data.length > 0) {
+  updateActiveLayerCompare(data, theme){
+    if(data.length > 0){
       let paint;
-      if (theme === 'dark') {
+      if(theme === 'dark'){
         paint = {
           'text-color': '#f6f6f6',
           'text-halo-blur': 4,
           'text-halo-color': '#383838',
           'text-halo-width': 1
-        }
+        };
       } else {
         paint = {
           'text-color': '#383838',
           'text-halo-blur': 4,
           'text-halo-color': '#f6f6f4',
           'text-halo-width': 1
-        }
+        };
       }
-      if (!this.map.getLayer('active-layer')) {
+      if(!this.map.getLayer('active-layer')){
         this.map.addLayer({
-          'id': 'active-layer-text',
-          'type': 'symbol',
-          'source': 'boxes',
-          'filter': ["match", ["get", "_id"], data, true, false],
-          "paint": paint,
-          "layout": {
-            "text-field": ['format', ["get", "name"], { 'font-scale': 1.2 }],
-            "text-variable-anchor": ["top"],
-            "text-offset": { 
-              "stops": [
-              [1, [0, 0.3]],
-              [8, [0, 0.8]],
-              [16, [0, 1.8]],
-              [22, [0, 10]],
-              [25, [0, 40]]
-            ]},
+          id: 'active-layer-text',
+          type: 'symbol',
+          source: 'boxes',
+          filter: ['match', ['get', '_id'], data, true, false],
+          paint,
+          layout: {
+            'text-field': ['format', ['get', 'name'], {'font-scale': 1.2}],
+            'text-variable-anchor': ['top'],
+            'text-offset': {
+              stops: [
+                [1, [0, 0.3]],
+                [8, [0, 0.8]],
+                [16, [0, 1.8]],
+                [22, [0, 10]],
+                [25, [0, 40]]
+              ]
+            },
             // "text-font": [
             //   "DIN Offc Pro Medium",
             //   "Arial Unicode MS Bold"
             // ],
-            "text-size": 18
+            'text-size': 18
           }
         });
         this.map.addLayer({
-          'id': 'active-layer',
-          'type': 'circle',
-          'source': 'boxes',
-          'filter': ["match", ["get", "_id"], data, true, false],
-          'paint': {
+          id: 'active-layer',
+          type: 'circle',
+          source: 'boxes',
+          filter: ['match', ['get', '_id'], data, true, false],
+          paint: {
             'circle-radius': {
-              'base': 1.75,
-              'stops': [[1, 10], [22, 580]]
+              base: 1.75,
+              stops: [[1, 10], [22, 580]]
             },
             'circle-blur': 0.6,
             // 'circle-stroke-width': 1,
             'circle-opacity': 0.6,
-            'circle-color': theme === 'dark' ? '#ffffff' :'#383838'
+            'circle-color': theme === 'dark' ? '#ffffff' : '#383838'
           }
         }, 'base-layer');
 
       } else {
-        this.map.setFilter('active-layer-text', ["match", ["get", "_id"], data, true, false]);
-        this.map.setFilter('active-layer', ["match", ["get", "_id"], data, true, false]);
+        this.map.setFilter('active-layer-text', ['match', ['get', '_id'], data, true, false]);
+        this.map.setFilter('active-layer', ['match', ['get', '_id'], data, true, false]);
       }
     }
   }
 
 
-
   // NUMBER LAYERS
-  addNumberLayer() {
+  addNumberLayer(){
     this.map.addLayer({
-      'id': 'number-layer',
-      'type': 'symbol',
-      'source': 'boxes',
-      "paint": {
+      id: 'number-layer',
+      type: 'symbol',
+      source: 'boxes',
+      paint: {
         'text-color': [
           'interpolate',
           ['linear'],
-          ["get", "Temperatur", ["object", ["get", "live", ["object", ["get", "sensors"]]]]],
+          ['get', 'Temperatur', ['object', ['get', 'live', ['object', ['get', 'sensors']]]]],
           -5, '#9900cc',
           0, '#0000ff',
           10, '#0099ff',
@@ -509,12 +561,12 @@ export class MapService {
           30, '#ff0000'
         ]
       },
-      "layout": {
-        'visibility': 'visible',
-        "text-field": "",
-        "text-variable-anchor": ["bottom"],
-        "text-offset": {
-          "stops": [
+      layout: {
+        visibility: 'visible',
+        'text-field': '',
+        'text-variable-anchor': ['bottom'],
+        'text-offset': {
+          stops: [
             [1, [0, 0.3]],
             [8, [0, 0.8]],
             [16, [0, 1.8]],
@@ -522,47 +574,47 @@ export class MapService {
             [25, [0, 40]]
           ]
         },
-        "text-size": 15
+        'text-size': 15
       }
     }, 'base-layer');
   }
 
   addClusterNumberLayers(layers){
-    var insertBeforeActiveLLayer = false;
+    let insertBeforeActiveLLayer = false;
     if(this.map.getLayer('active-layer-text')){
       insertBeforeActiveLLayer = true;
     }
     this.map.addLayer({
-      'id': 'cluster-number-layer',
-      'type': 'symbol',
-      'source': 'cluster-boxes',
-      'filter':  ['has', 'point_count'],
-        //     'all',
-        //     // ["get", "Temperatur", ["object", ["get", "live"]]],
-        //     // ['==', ['get', 'cluster'], true]
-        //     ['has', 'point_count']
-        //   ],
-      "paint": {
-        'text-color': "white"
+      id: 'cluster-number-layer',
+      type: 'symbol',
+      source: 'cluster-boxes',
+      filter: ['has', 'point_count'],
+      //     'all',
+      //     // ["get", "Temperatur", ["object", ["get", "live"]]],
+      //     // ['==', ['get', 'cluster'], true]
+      //     ['has', 'point_count']
+      //   ],
+      paint: {
+        'text-color': 'white'
       },
-      "layout": {
-        "visibility": layers[0].layout && layers[0].layout.visibility ? layers[0].layout.visibility : 'visible',
-        "text-field": ["concat", ['/',['round',[ '*', ['/', ["get", "Temperatur"], ["get", "point_count"]], 100]],100], ""],
-        "text-size": 15,
+      layout: {
+        visibility: layers[0].layout && layers[0].layout.visibility ? layers[0].layout.visibility : 'visible',
+        'text-field': ['concat', ['/', ['round', ['*', ['/', ['get', 'Temperatur'], ['get', 'point_count']], 100]], 100], ''],
+        'text-size': 15,
         'text-font': ['Montserrat Bold', 'Arial Unicode MS Bold'],
       }
     }, insertBeforeActiveLLayer ? 'active-layer-text' : null);
-    
+
     this.map.addLayer({
-      'id': 'no-cluster-number',
-      'type': 'symbol',
-      'source': 'cluster-boxes',
-      'filter': ['!', ['has', 'point_count']],
-      "paint": {
+      id: 'no-cluster-number',
+      type: 'symbol',
+      source: 'cluster-boxes',
+      filter: ['!', ['has', 'point_count']],
+      paint: {
         'text-color': [
           'interpolate',
           ['linear'],
-          ["get", "Temperatur", ["object", ["get", "live", ["object", ["get", "sensors"]]]]],
+          ['get', 'Temperatur', ['object', ['get', 'live', ['object', ['get', 'sensors']]]]],
           -5, '#9900cc',
           0, '#0000ff',
           10, '#0099ff',
@@ -570,61 +622,70 @@ export class MapService {
           30, '#ff0000'
         ]
       },
-      "layout": {
-        "visibility": layers[0].layout && layers[0].layout.visibility ? layers[0].layout.visibility : 'visible',
-        "text-field": ["get", "Temperatur", ["object", ["get", "live", ["object", ["get", "sensors"]]]]],
-        "text-variable-anchor": ["bottom"],
-        "text-offset": { 
-          "stops": [
-          [1, [0, 0.3]],
-          [8, [0, 0.8]],
-          [16, [0, 1.8]],
-          [22, [0, 10]],
-          [25, [0, 40]]
-        ]},
-        "text-size": 15
+      layout: {
+        visibility: layers[0].layout && layers[0].layout.visibility ? layers[0].layout.visibility : 'visible',
+        'text-field': ['get', 'Temperatur', ['object', ['get', 'live', ['object', ['get', 'sensors']]]]],
+        'text-variable-anchor': ['bottom'],
+        'text-offset': {
+          stops: [
+            [1, [0, 0.3]],
+            [8, [0, 0.8]],
+            [16, [0, 1.8]],
+            [22, [0, 10]],
+            [25, [0, 40]]
+          ]
+        },
+        'text-size': 15
       }
     });
   }
 
-  //CLUSTERING
+  // HEATMAP
+  setHeatmap(heatmap){
+    if(this.map.getLayer('boxes-heatmap')){
+      this.map.setLayoutProperty('boxes-heatmap', 'visibility', heatmap ? 'none' : 'visible');
+    }
+  }
+
+  // CLUSTERING
   setClustering(clustering, date){
+
     if(this.map.getLayer('base-layer')){
-      this.map.setLayoutProperty('base-layer', 'visibility', clustering ? 'none' : 'visible' );
-      this.map.setLayoutProperty('number-layer', 'visibility', clustering ? 'none' : 'visible' );
+      this.map.setLayoutProperty('base-layer', 'visibility', clustering ? 'none' : 'visible');
+      this.map.setLayoutProperty('number-layer', 'visibility', clustering ? 'none' : 'visible');
     }
     if(this.map.getLayer('boxes-cluster')){
       if(date){
-      //   this.map.setLayoutProperty('boxes-no-cluster'+date.toISOString(), 'visibility', clustering ? 'visible' : 'none' );
-      //   this.map.setLayoutProperty('cluster'+date.toISOString(), 'visibility', clustering ? 'visible' : 'none' );
-      //   this.map.setLayoutProperty('cluster-number-layer'+date.toISOString(), 'visibility', clustering ? 'visible' : 'none' );
-      //   this.map.setLayoutProperty('no-cluster-number'+date.toISOString(), 'visibility', clustering ? 'visible' : 'none' );
+        //   this.map.setLayoutProperty('boxes-no-cluster'+date.toISOString(), 'visibility', clustering ? 'visible' : 'none' );
+        //   this.map.setLayoutProperty('cluster'+date.toISOString(), 'visibility', clustering ? 'visible' : 'none' );
+        //   this.map.setLayoutProperty('cluster-number-layer'+date.toISOString(), 'visibility', clustering ? 'visible' : 'none' );
+        //   this.map.setLayoutProperty('no-cluster-number'+date.toISOString(), 'visibility', clustering ? 'visible' : 'none' );
 
       } else {
-        this.map.setLayoutProperty('boxes-no-cluster', 'visibility', clustering ? 'visible' : 'none' );
-        this.map.setLayoutProperty('boxes-cluster', 'visibility', clustering ? 'visible' : 'none' );
-        this.map.setLayoutProperty('cluster-number-layer', 'visibility', clustering ? 'visible' : 'none' );
-        this.map.setLayoutProperty('no-cluster-number', 'visibility', clustering ? 'visible' : 'none' );
+        this.map.setLayoutProperty('boxes-no-cluster', 'visibility', clustering ? 'visible' : 'none');
+        this.map.setLayoutProperty('boxes-cluster', 'visibility', clustering ? 'visible' : 'none');
+        this.map.setLayoutProperty('cluster-number-layer', 'visibility', clustering ? 'visible' : 'none');
+        this.map.setLayoutProperty('no-cluster-number', 'visibility', clustering ? 'visible' : 'none');
       }
     }
   }
 
 
-  //MOUSE FUNCTIONS
+  // MOUSE FUNCTIONS
   clusterMouseoverFunction = (e) => {
-    if (e.features.length > 0) {
+    if(e.features.length > 0){
       this.map.getCanvas().style.cursor = 'pointer';
-      
-      let layer = e.features[0].layer.id;
-      let that = this;
-      let features = this.map.queryRenderedFeatures(e.point, { layers: [layer] });
-      let clusterId = features[0].properties.cluster_id,
+
+      const layer = e.features[0].layer.id;
+      const that = this;
+      const features = this.map.queryRenderedFeatures(e.point, {layers: [layer]});
+      const clusterId = features[0].properties.cluster_id,
         point_count = features[0].properties.point_count,
         clusterSource = this.map.getSource(this.map.getLayer(layer).source);
-    
+
       // Get all points under a cluster
       clusterSource.getClusterLeaves(clusterId, point_count, 0, function(err, aFeatures){
-        //MAKE LAYER+SOURCE AND ADD TO MAP
+        // MAKE LAYER+SOURCE AND ADD TO MAP
         that.map.getSource('cluster-hover').setData({
           type: 'FeatureCollection',
           features: aFeatures
@@ -645,7 +706,7 @@ export class MapService {
     clearTimeout(this.deactivatePopupTimer);
     this.map.getCanvas().style.cursor = 'pointer';
     // let box = e.features[0].properties;
-    
+
     this.uiService.setCluster(null);
     // var coordinates = e.features[0].geometry.coordinates.slice();
     // let pixelPosition = this.map.project(coordinates);
@@ -660,31 +721,32 @@ export class MapService {
   addHoverCluster(layer, circleColor){
     if(!this.map.getSource('cluster-hover')){
       this.map.addSource('cluster-hover', {
-        type: "geojson",
+        type: 'geojson',
         data: {
           type: 'FeatureCollection',
           features: []
         }
       });
-  
+
       this.map.addLayer({
-        'id': 'cluster-hover-layer',
-        'type': 'circle',
-        'source': 'cluster-hover',
-        'paint': {
+        id: 'cluster-hover-layer',
+        type: 'circle',
+        source: 'cluster-hover',
+        paint: {
           'circle-radius': {
-          'base': 1.75,
-          'stops': [[1, 6], [22, 580]]
+            base: 1.75,
+            stops: [[1, 6], [22, 580]]
           },
           'circle-opacity': 0.4,
           'circle-color': 'black'
         }
       }, 'boxes-cluster');
     }
-    if(circleColor)
+    if(circleColor){
       this.map.setPaintProperty('cluster-hover-layer', 'circle-color', circleColor);
+    }
 
-    this.clusterMouseleaveFunctionSave = this.clusterMouseleaveFunction.bind(this)
+    this.clusterMouseleaveFunctionSave = this.clusterMouseleaveFunction.bind(this);
     this.map.on('mouseenter', layer, this.clusterMouseoverFunction);
     this.map.on('mouseleave', layer, this.clusterMouseleaveFunctionSave);
   }
@@ -694,23 +756,24 @@ export class MapService {
     this.boxService.setPopupBox(null);
   }
 
-  //function to keep popup activated of users hovers the popup
+  // function to keep popup activated of users hovers the popup
   mouseEnterPopup(box){
-    this.boxService.setPopupBox(box)
+    this.boxService.setPopupBox(box);
   }
-  
-  //function called when the mouse leaves the popup
+
+  // function called when the mouse leaves the popup
   mouseLeavePopup(){
     this.boxService.setPopupBox(null);
   }
 
-  addClickFuntion(layer) {
+  addClickFuntion(layer){
     this.map.on('click', layer, this.baseClickFunction);
   }
-  addClusterClickFunction(layer) {
+
+  addClusterClickFunction(layer){
     this.map.on('click', layer, this.clusterClickFunction);
   }
-  
+
   baseClickFunction = e => {
     // if (e.features.length > 0) {
     //   this.router.navigate(['/explore/' + e.features[0].properties._id], {
@@ -720,27 +783,30 @@ export class MapService {
     // }
     clearTimeout(this.deactivatePopupTimer);
     this.map.getCanvas().style.cursor = 'pointer';
-    var coordinates = e.features[0].geometry.coordinates.slice();
-    let pixelPosition = this.map.project(coordinates);
-    let box = e.features[0].properties;
+    const coordinates = e.features[0].geometry.coordinates.slice();
+    const pixelPosition = this.map.project(coordinates);
+    const box = e.features[0].properties;
     // this.uiService.setCluster(null);
-    this.boxService.setPopupBox({ ...box, sensors: e.features[0].properties.sensors ? JSON.parse(e.features[0].properties.sensors) : null });
+    this.boxService.setPopupBox({
+      ...box,
+      sensors: e.features[0].properties.sensors ? JSON.parse(e.features[0].properties.sensors) : null
+    });
 
     positionPopup(pixelPosition);
   }
   clusterClickFunction = e => {
     this.map.getCanvas().style.cursor = 'pointer';
-    
-    let that = this;
-    let layer = e.features[0].layer.id;
-    let coordinates = e.features[0].geometry.coordinates.slice();
-    let pixelPosition = this.map.project(coordinates);
-    let clusterSource = this.map.getSource(this.map.getLayer(layer).source);
-    let clusterId = e.features[0].properties.cluster_id,
+
+    const that = this;
+    const layer = e.features[0].layer.id;
+    const coordinates = e.features[0].geometry.coordinates.slice();
+    const pixelPosition = this.map.project(coordinates);
+    const clusterSource = this.map.getSource(this.map.getLayer(layer).source);
+    const clusterId = e.features[0].properties.cluster_id,
       point_count = e.features[0].properties.point_count;
 
     // Get all points under a cluster
-    clusterSource.getClusterLeaves(clusterId, point_count, 0, function(err, aFeatures){     
+    clusterSource.getClusterLeaves(clusterId, point_count, 0, function(err, aFeatures){
       that.uiService.setCluster(aFeatures);
     });
 
@@ -749,20 +815,20 @@ export class MapService {
 
   compareClickFunction = e => {
 
-    if (e.features.length > 0) {
-      var coordinates = e.features[0].geometry.coordinates.slice();
-    
-      let box = e.features[0].properties;
+    if(e.features.length > 0){
+      const coordinates = e.features[0].geometry.coordinates.slice();
+
+      const box = e.features[0].properties;
       if(e.features[0].properties.sensors){
-        this.boxService.setPopupBox({ ...box, sensors: JSON.parse(e.features[0].properties.sensors) });
+        this.boxService.setPopupBox({...box, sensors: JSON.parse(e.features[0].properties.sensors)});
       } else {
         this.boxService.setPopupBox({...box, sensors: []});
       }
-      let pixelPosition = this.map.project(coordinates);
+      const pixelPosition = this.map.project(coordinates);
 
       positionPopup(pixelPosition);
 
-      //CODE TO ADD BOX TO COMPARE DIRECTLY ON MARKER CLICK (using popup atm, so not needed)
+      // CODE TO ADD BOX TO COMPARE DIRECTLY ON MARKER CLICK (using popup atm, so not needed)
       // let newIds = [];
       // if (this.activatedRoute.snapshot.queryParams.id) {
       //   if (Array.isArray(this.activatedRoute.snapshot.queryParams.id)) {
@@ -793,7 +859,7 @@ export class MapService {
   compareMouseenterFunction = e => {
     this.map.getCanvas().style.cursor = 'pointer';
     // var coordinates = e.features[0].geometry.coordinates.slice();
-    
+
     // let box = e.features[0].properties;
     // this.boxService.setPopupBox({ ...box, sensors: JSON.parse(e.features[0].properties.sensors) });
     // let pixelPosition = this.map.project(coordinates);
@@ -803,9 +869,9 @@ export class MapService {
 
   // Popups
 
-  addPopup(layer) {
-    let that = this;
-    this.map.on('mouseenter', layer, 
+  addPopup(layer){
+    const that = this;
+    this.map.on('mouseenter', layer,
       function(e){
         that.activatePopupTimer = setTimeout(function(){
           that.baseMouseenterFunction(e);
@@ -813,38 +879,37 @@ export class MapService {
       }
     );
 
-    //this needs to be done like this so the reference to mouseLeaveFunction stays the same across the app
-    if(!this.mouseLeaveFunction)
+    // this needs to be done like this so the reference to mouseLeaveFunction stays the same across the app
+    if(!this.mouseLeaveFunction){
       this.mouseLeaveFunction = this.mouseLeave.bind(this);
+    }
     this.map.on('mouseleave', layer, this.mouseLeaveFunction);
   }
 
 
-
-
   filterByProperty(data, property){
-    let filteredData = data["features"].filter(res => {
-      if(res['properties']['sensors']['live'] && res['properties']['sensors']['live'][property]){
+    const filteredData = data.features.filter(res => {
+      if(res.properties.sensors.live && res.properties.sensors.live[property]){
         return res;
       }
-    })
-    return {type: "FeatureCollection", features: filteredData};
+    });
+    return {type: 'FeatureCollection', features: filteredData};
   }
 
   filterData(data, property, filter){
-    let filteredData = data["features"].filter(res => {
+    const filteredData = data.features.filter(res => {
       if(filter.ids){
-        if(filter.ids.indexOf(res['properties']['_id']) === -1){
+        if(filter.ids.indexOf(res.properties._id) === -1){
           return false;
         }
       }
       if(filter.model.length > 0){
-        if(filter.model.indexOf(res['properties']['model']) === -1){
+        if(filter.model.indexOf(res.properties.model) === -1){
           return false;
         }
       }
       if(
-        (filter.exposure === 'all' || filter.exposure === res['properties']['exposure']) &&
+        (filter.exposure === 'all' || filter.exposure === res.properties.exposure) &&
         // (filter.model.length === 0 || filter.model.indexOf(res['properties']['model'] != -1)) &&
         (filter.group === null || filter.group === res.group)
       ){
@@ -852,36 +917,38 @@ export class MapService {
         return;
       }
       if(property){
-        if(res['properties']['sensors']['live'] && res['properties']['sensors']['live'][property]){
+        if(res.properties.sensors.live && res.properties.sensors.live[property]){
           return res;
         }
       } else {
         return res;
       }
-    })
-    return {type: "FeatureCollection", features: filteredData};
+    });
+    return {type: 'FeatureCollection', features: filteredData};
 
   }
 
   // THEMING
-  setThemeDark(dateRange) {
+  setThemeDark(dateRange){
 
     if(this.baseLayerSub){
       this.baseLayerSub.unsubscribe();
+      this.heatmapLayerSub.unsubscribe();
       this.clusterLayerSub.unsubscribe();
       this.activeBoxSub.unsubscribe();
       this.compareToSub.unsubscribe();
       this.clusteringSub.unsubscribe();
+      this.heatmapSub.unsubscribe();
       this.compareModusSub.unsubscribe();
       this.numbersSub.unsubscribe();
     }
 
-    let that = this;
+    const that = this;
     if(dateRange){
-      let steps = extractDateSteps(dateRange);
+      const steps = extractDateSteps(dateRange);
       steps.forEach(step => {
-        this.map.off('mouseleave', 'boxes-no-cluster'+step.toISOString(), this.mouseLeaveFunction);
-      })
+        this.map.off('mouseleave', 'boxes-no-cluster' + step.toISOString(), this.mouseLeaveFunction);
+      });
     }
     this.map.off('mouseleave', 'base-layer', this.mouseLeaveFunction);
     this.map.off('mouseleave', 'boxes-no-cluster', this.mouseLeaveFunction);
@@ -889,10 +956,10 @@ export class MapService {
     // this.boxService.setDataInit(false);
     this.uiService.updateBaseLayer(
       {
-        'paint': {
+        paint: {
           'circle-radius': {
-            'base': 1.75,
-            'stops': [[1, 5], [22, 200]]
+            base: 1.75,
+            stops: [[1, 5], [22, 200]]
           },
           'circle-stroke-width': 0,
           'circle-blur': 0.8,
@@ -902,40 +969,42 @@ export class MapService {
     this.map.setPaintProperty('active-layer-text', 'text-color', 'white');
     this.map.setPaintProperty('active-layer-text', 'text-halo-color', '#383838');
     this.map.setPaintProperty('active-layer', 'circle-color', '#ffffff');
-    this.map.setStyle("mapbox://styles/mapbox/dark-v9");
+    this.map.setStyle('mapbox://styles/mapbox/dark-v9');
 
-    this.map.once('styledata', function() {
+    this.map.once('styledata', function(){
       setTimeout(() => {
         that.addMapSources();
         // that.initLayersWithoutSub();
-      }, 1000)
+      }, 1000);
       // that.subscribeToLayers();
       // that.addMapSources();
       // that.map.once('sourcedata', function(){
       //   that.subscribeToLayers();
       // });
-    })
+    });
 
   }
 
-  setThemeLight(dateRange) {
+  setThemeLight(dateRange){
 
     if(this.baseLayerSub){
       this.baseLayerSub.unsubscribe();
+      this.heatmapLayerSub.unsubscribe();
       this.clusterLayerSub.unsubscribe();
       this.activeBoxSub.unsubscribe();
       this.compareToSub.unsubscribe();
       this.clusteringSub.unsubscribe();
+      this.heatmapSub.unsubscribe();
       this.compareModusSub.unsubscribe();
       this.numbersSub.unsubscribe();
     }
 
-    let that = this;
+    const that = this;
     if(dateRange){
-      let steps = extractDateSteps(dateRange);
+      const steps = extractDateSteps(dateRange);
       steps.forEach(step => {
-        this.map.off('mouseleave', 'boxes-no-cluster'+step.toISOString(), this.mouseLeaveFunction);
-      })
+        this.map.off('mouseleave', 'boxes-no-cluster' + step.toISOString(), this.mouseLeaveFunction);
+      });
     }
     this.map.off('mouseleave', 'base-layer', this.mouseLeaveFunction);
     this.map.off('mouseleave', 'boxes-no-cluster', this.mouseLeaveFunction);
@@ -943,10 +1012,10 @@ export class MapService {
     // this.boxService.setDataInit(false);
     this.uiService.updateBaseLayer(
       {
-        'paint': {
+        paint: {
           'circle-radius': {
-            'base': 1.75,
-            'stops': [[1, 5], [22, 200]]
+            base: 1.75,
+            stops: [[1, 5], [22, 200]]
           },
           'circle-stroke-width': 1,
           'circle-blur': 0
@@ -956,37 +1025,38 @@ export class MapService {
     this.map.setPaintProperty('active-layer-text', 'text-color', '#383838');
     this.map.setPaintProperty('active-layer-text', 'text-halo-color', '#f6f6f6');
     this.map.setPaintProperty('active-layer', 'circle-color', '#383838');
-    this.map.setStyle("mapbox://styles/mapbox/light-v9");
-    
+    this.map.setStyle('mapbox://styles/mapbox/light-v9');
 
-    this.map.once('styledata', function() {
+
+    this.map.once('styledata', function(){
       setTimeout(() => {
         that.addMapSources();
         // that.initLayersWithoutSub();
-      }, 1000)
+      }, 1000);
 
       // that.addMapSources();
       // that.map.once('sourcedata', function(){
       //   that.subscribeToLayers();
       // });
-    })
+    });
   }
 
   getBounds(){
     return this.map.getBounds().toArray();
   }
+
   fitBounds(bbox){
     this.map.fitBounds(bbox);
   }
 
-  hideAllBaseLayers() {
+  hideAllBaseLayers(){
     if(this.map.getLayer('base-layer')){
       this.map.setLayoutProperty('base-layer', 'visibility', 'none');
-      this.map.setLayoutProperty('number-layer', 'visibility', 'none' );
-      this.map.setLayoutProperty('boxes-no-cluster', 'visibility', 'none' );
-      this.map.setLayoutProperty('boxes-cluster', 'visibility', 'none' );
-      this.map.setLayoutProperty('cluster-number-layer', 'visibility', 'none' );
-      this.map.setLayoutProperty('no-cluster-number', 'visibility', 'none' );
+      this.map.setLayoutProperty('number-layer', 'visibility', 'none');
+      this.map.setLayoutProperty('boxes-no-cluster', 'visibility', 'none');
+      this.map.setLayoutProperty('boxes-cluster', 'visibility', 'none');
+      this.map.setLayoutProperty('cluster-number-layer', 'visibility', 'none');
+      this.map.setLayoutProperty('no-cluster-number', 'visibility', 'none');
     }
   }
 

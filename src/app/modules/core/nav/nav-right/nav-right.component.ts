@@ -14,12 +14,14 @@ export class NavRightComponent implements OnInit {
   @Output() languageToggled = new EventEmitter();
   @Output() settingsToggled = new EventEmitter();
   @Output() clusteringToggled = new EventEmitter();
+  @Output() heatmapToggled = new EventEmitter();
 
   @Input() theme;
   @Input() language;
   @Input() settings;
   @Input() user;
   @Input() clustering;
+  @Input() heatmap;
 
   constructor() { }
 
@@ -48,5 +50,9 @@ export class NavRightComponent implements OnInit {
 
   toggleClustering(){
     this.clusteringToggled.emit();
+  }
+
+  toggleHeatmap(){
+    this.heatmapToggled.emit();
   }
 }

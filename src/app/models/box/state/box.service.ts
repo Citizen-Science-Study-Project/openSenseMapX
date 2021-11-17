@@ -20,17 +20,17 @@ export class BoxService {
 
 
   constructor(
-    private boxStore: BoxStore, 
-    private sensorStore: SensorStore, 
-    private boxQuery: BoxQuery, 
+    private boxStore: BoxStore,
+    private sensorStore: SensorStore,
+    private boxQuery: BoxQuery,
     private uiService: UiService,
     private http: HttpClient) {
   }
 
   //DEPRECATED: Used to fetch boxes from the api and load to store. Because of perfomance issues the data is loaded directly as GEOJSON into mapbox now.
   get() {
-    
-    // Normalizr-Schema for the Data 
+
+    // Normalizr-Schema for the Data
     const sensor = new schema.Entity('sensors', {}, { idAttribute: '_id' });
     const box = new schema.Entity('boxes', {sensors: [sensor] }, { idAttribute: '_id' });
 
@@ -44,7 +44,7 @@ export class BoxService {
       // this.boxStore.set(entities);
       let ownNormalize = processBoxData(entities);
       // // //set Data in stores
-      this.boxStore.set(ownNormalize[0]);      
+      this.boxStore.set(ownNormalize[0]);
       //TODO: find better way than this (reference from sensor to box)
       // for (let box in res.entities.boxes) {
       //   res.entities.boxes[box].sensors.forEach(sensor => {
@@ -57,13 +57,13 @@ export class BoxService {
     }));
   }
 
-  // Function to fetch daterange-Data from the opensensemap API. 
+  // Function to fetch daterange-Data from the opensensemap API.
   getValues(pheno, dateRange, bbox) {
-    
+
     this.boxStore.setFetchingData(true);
 
     const bboxString  = `${bbox[0][0]},${bbox[0][1]},${bbox[1][0]},${bbox[1][1]}`;
-    
+
 
     return this.http.get<any[]>(`${environment.api_url}/statistics/descriptive?&phenomenon=${pheno}&bbox=${bboxString}&format=json&columns=boxId,lat,lon,boxName,exposure&from-date=${dateRange[0].toISOString()}&to-date=${dateRange[1].toISOString()}&window=3600000&operation=arithmeticMean`).pipe(tap(entities => {
       entities = entities.map(ent => {
@@ -80,7 +80,7 @@ export class BoxService {
             {_id: sensorId, title: pheno}
           ],
           values: {
-            [pheno]: noEnt 
+            [pheno]: noEnt
           }
         }
       })
@@ -94,7 +94,7 @@ export class BoxService {
 
       this.boxStore.setDataFetched(true);
       this.boxStore.setFetchingData(false);
-      //TODO: find a better place for this + fix calling twice :o 
+      //TODO: find a better place for this + fix calling twice :o
       this.uiService.setSelectedDate(dateRange[0]);
       this.uiService.setSelectedDate(dateRange[0]);
       this.uiService.setFilterVisible(false);
@@ -196,7 +196,7 @@ export class BoxService {
   setDataFetched(dataFetched){
     this.boxStore.setDataFetched(dataFetched);
   }
-  
+
   setFetchingData(fetchingData){
     this.boxStore.setFetchingData(fetchingData);
   }
