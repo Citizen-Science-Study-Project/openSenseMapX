@@ -88,8 +88,13 @@
     "PREVIEW": "Preview",
     "ADD_STEP": "Add color step",
     "INFO": "More information",
-    "SAVE_AND_SHARE": "Save and share",
+    "SAVE": "Save visualization",
+    "SHARE": "Share visualization",
     "SCENARIOS": "Scenarios",
+
+    "SAVE_VIS": "Save visualization",
+    "SHARE_VIS": "Share visualization",
+    "WEB_MAP": "WEB MAP",
 
     "BETA_TEXT": "This site is still development!! Proceed with care ;).",
 

@@ -87,8 +87,13 @@
     "PREVIEW": "Preview",
     "ADD_STEP": "Add color step",
     "INFO": "Mehr Informationen",
-    "SAVE_AND_SHARE": "Speichern und teilen",
+    "SAVE": "Visualisierung speichern",
+    "SHARE": "Visualisierung teilen",
     "SCENARIOS": "Szenarien",
+
+    "SAVE_VIS": "Visualisierung speichern",
+    "SHARE_VIS": "Visualisierung teilen",
+    "WEB_MAP": "WEB MAP",
 
     "BETA_TEXT": "Diese Seite ist noch in der Entwicklung!! Vorsicht ;).",
 

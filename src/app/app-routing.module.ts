@@ -17,6 +17,7 @@ import { PrivacyComponent } from './modules/core/privacy/privacy.component';
 import { AboutComponent } from './modules/core/about/about.component';
 import { ContactComponent } from './modules/core/contact/contact.component';
 import { NewVisContainerComponent } from './modules/core/new-vis-container/new-vis-container.component';
+import { ShareVisContainerComponent } from './modules/core/share-vis-container/share-vis-container.component';
 import { FaqComponent } from './modules/core/faq/faq.component';
 import { DonateComponent } from './modules/core/donate/donate.component';
 import { ThanksComponent } from './modules/core/thanks/thanks.component';
@@ -30,6 +31,7 @@ const routes: Routes = [
   // {path: 'about', component: ImpressumComponent},
   {path: 'vis', component: VisContainerComponent, outlet: 'modal'},
   {path: 'newvis', component: NewVisContainerComponent, outlet: 'modal'},
+  {path: 'sharevis', component: ShareVisContainerComponent, outlet: 'modal'},
   {path: 'edit-legend', component: LegendEditContainerComponent, outlet: 'modal'},
   {path: 'login', component: LoginContainerComponent, outlet: 'sidebar'},
   {path: 'register', component: RegisterContainerComponent, outlet: 'sidebar'},

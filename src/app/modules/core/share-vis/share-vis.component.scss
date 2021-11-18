@@ -1,0 +1,28 @@
+.share-vis-box {
+    text-align: center;
+}
+
+.share-vis-elem {
+    display: inline-block;
+    width: 25%;
+    margin: 2.5%;
+}
+
+.share-vis-preview {
+    border:2.5px solid black;
+    overflow: hidden;
+}
+
+.osem-button {
+    margin-top: 10%;
+    width: 100%;
+}
+
+.share-vis-preview, img {
+    border-radius: 25px;
+}
+
+img {
+    display: flex;
+    padding: 5%;
+}

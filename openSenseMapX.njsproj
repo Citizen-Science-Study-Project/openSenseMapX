@@ -335,6 +335,7 @@
     <Content Include="src\assets\img\userimg\vis\1.png" />
     <Content Include="src\assets\img\userimg\vis\0_thumb.jpg" />
     <Content Include="src\assets\img\userimg\vis\1_thumb.jpg" />
+    <Content Include="src\assets\img\test\share-preview.png" />
     <Content Include="src\styles\icons\opensensemap.svg" />
     <Content Include="src\styles\fonts\lato-v16-latin\lato-v16-latin-900.svg" />
     <Content Include="src\styles\fonts\lato-v16-latin\lato-v16-latin-regular.svg" />
