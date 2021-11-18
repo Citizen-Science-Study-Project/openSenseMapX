@@ -9,7 +9,7 @@ import { FilterContainerComponent } from './filter/filter-container/filter-conta
 import { BottomBarContainerComponent } from './bottom-bar-container/bottom-bar-container.component';
 import { RouterModule } from '@angular/router';
 import { DatepickerComponent } from './filter/datepicker/datepicker.component';
-import { FormsModule,ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FilterSwitcherComponent } from './filter/filter-switcher/filter-switcher.component';
 import { FilterComponent } from './filter/filter/filter.component';
 import { ExploreModule } from '../explore/explore.module';
@@ -66,7 +66,7 @@ import { ShareComponent } from './share/share.component';
     useClass: TokenInterceptor,
     multi: true
   }
-],
+  ],
   exports: [FilterContainerComponent, NavContainerComponent, BottomBarContainerComponent, PhenomenonComponent,
     ImpressumComponent, FaqComponent, DonateComponent, ThanksComponent, PhenoInfoModalComponent,
     FilterContainerValuesComponent, DatetimeModalContainerComponent, NewVisContainerComponent,

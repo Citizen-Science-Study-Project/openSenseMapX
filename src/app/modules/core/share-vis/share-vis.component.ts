@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MapService } from '../../explore/services/map.service';
 import { UiQuery } from '../../../models/ui/state/ui.query';
 import { ActivatedRoute } from '@angular/router';
@@ -15,6 +15,8 @@ export class ShareVisComponent implements OnInit {
 
   constructor(private activatedRoute: ActivatedRoute, private uiQuery: UiQuery, private mapService: MapService) {
   }
+  styleUrls: ['./share-vis.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 
   ngOnInit() {
   }
@@ -33,6 +35,11 @@ export class ShareVisComponent implements OnInit {
     console.log('URL', this.URL);
   }
 
-  shareVis() {
+  sharePDF() {
+    alert("PDF");
+  }
+
+  shareGIF() {
+    alert("GIF");
   }
 }

@@ -74,8 +74,8 @@
     "MY_VIS": "Gespeicherte Karten",
     "MY_ACCOUNT": "Mein Account",
 
-    "CLUSTERING":"Clustering",
-    "HIDE_OUTLIERS":"Hide Outliers",
+    "CLUSTERING": "Clustering",
+    "HIDE_OUTLIERS": "Hide Outliers",
 
     "COMPARE_MODUS_HEADER": "Vergleichs-Modus",
     "COMPARE_MODUS_HELP": "Zum vergleichen auf eine Station auf der Karte klicken.",
@@ -115,7 +115,7 @@
 
     "CREATED_AT": "Online seit",
     "SENSORS": "Sensoren",
-    "STATE" : "Status",
+    "STATE": "Status",
     "LOCATION": "Exposure",
     "COMPARE_TO_OTHER_BOX": "Mit anderer Box vergleichen",
     "COMPARE_TO_CURRENT_BOX": "Mit ausgewählter Box vergleichen",
@@ -172,5 +172,4 @@
     "PM25_INTERPRETATION": "Feinstaubmessungen, insb. Rohdaten von Einzelmessungen sollten mit Vorsicht genossen werden. Wie die Grenzwerte es schon andeuten werden normalerweise Mittelwerte aus vielen einzelnen Messungen über eine Stunde oder über einen Tag berechnet.",
     "PM25_INFLUENCE": "Höhe des Messung, Autoverkehr, Holzverbrennung (z.B. Kaminöfen)..",
     "PM2.5_FUN_FACT": "Entschuldige bitte, aber wir kennen keinen Spass bei Luftverschmutzung."
-
 }
