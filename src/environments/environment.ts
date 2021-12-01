@@ -5,10 +5,11 @@
 export const environment = {
   production: false,
   // api_url: "https://api.opensensemap.org",
-  api_url: "https://api.testing.opensensemap.org",
+  // api_url: "https://api.testing.opensensemap.org",
+  api_url: "http://localhost:8000",
   sensor_wiki_url: "http://localhost:3001",
   mapbox_token: "pk.eyJ1IjoibWdhZG8wMSIsImEiOiJja3ZzMzQycno4dmR0MnVxd2pidTI3NXY5In0.wDFWUm3fvFszNIgYswubvw",
-  locationiq_token: "23e12b10d8c3aad04e8e"
+  locationiq_token: "pk.81afde5a999655e8393af5493d39334a"
 };
 
 /*

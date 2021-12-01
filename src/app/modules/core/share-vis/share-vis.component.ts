@@ -17,6 +17,7 @@ export class ShareVisComponent implements OnInit {
   }
   styleUrls: ['./share-vis.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
+  @Output() visShared = new EventEmitter();
 
   ngOnInit() {
   }
