@@ -27,4 +27,7 @@ export class ShareVisContainerComponent implements OnInit {
     this.bbox = this.mapService.getBounds();
   }
 
+  shareVis() {
+    this.visService.shareVis();
+  }
 }

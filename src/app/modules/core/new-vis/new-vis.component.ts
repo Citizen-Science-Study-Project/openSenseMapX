@@ -24,5 +24,4 @@ export class NewVisComponent implements OnInit {
   saveVis(vis){
     this.visSaved.emit(vis);
   }
-
 }

@@ -37,7 +37,7 @@ export class VisFormComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this);
+    //console.log(this);
     this.visForm = this.builder.group({
       name: [null, Validators.required],
       // exposure: ['outdoor', Validators.required],

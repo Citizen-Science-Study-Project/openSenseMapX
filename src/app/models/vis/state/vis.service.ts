@@ -68,4 +68,15 @@ export class VisService {
 
     }
   }
+
+  shareVis(){
+    alert("this works!");
+
+    let headers = new HttpHeaders();
+    headers = headers.append('Authorization', 'Bearer '+window.localStorage.getItem('sb_accesstoken'));
+
+    return this.http.get(`${environment.api_url}/stats`, {headers: headers}).subscribe(res => {
+      console.log(res);
+    })
+  }
 }

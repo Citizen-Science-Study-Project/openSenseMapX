@@ -8,20 +8,14 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output
 })
 export class ShareVisComponent implements OnInit {
 
+  @Output() visShared = new EventEmitter();
+
   constructor() { }
 
   ngOnInit() {
   }
 
-  shareMap() {
-    alert("WEB MAP");
-  }
-
-  sharePDF() {
-    alert("PDF");
-  }
-
-  shareGIF() {
-    alert("GIF");
+  shareVis(){
+    this.visShared.emit();
   }
 }
