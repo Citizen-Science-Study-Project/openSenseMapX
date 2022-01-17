@@ -19,8 +19,8 @@ export class ShareVisContainerComponent implements OnInit {
 
 
   constructor(
-    private visService: VisService, 
-    private uiQuery: UiQuery, 
+    private visService: VisService,
+    private uiQuery: UiQuery,
     private mapService: MapService) { }
 
   ngOnInit() {
@@ -28,6 +28,6 @@ export class ShareVisContainerComponent implements OnInit {
   }
 
   shareVis() {
-    this.visService.shareVis();
+    this.visService.generatePDF();
   }
 }

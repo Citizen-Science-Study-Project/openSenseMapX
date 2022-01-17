@@ -15,7 +15,7 @@ export class ShareVisComponent implements OnInit {
   ngOnInit() {
   }
 
-  shareVis(){
+  shareVis() {
     this.visShared.emit();
   }
 }

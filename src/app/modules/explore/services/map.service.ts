@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { UiQuery } from 'src/app/models/ui/state/ui.query';
 
-import { arrayRemove, extractDateSteps, positionPopup } from '../box/osem-line-chart/helper/helpers';
+import { arrayRemove, extractDateSteps, positionPopup, toGeoJson } from '../box/osem-line-chart/helper/helpers';
 import { BoxService } from 'src/app/models/box/state/box.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BoxQuery } from 'src/app/models/box/state/box.query';
@@ -1005,4 +1005,28 @@ export class MapService {
   //   const features = this.map.queryRenderedFeatures([[0,0],[180,180]], { layers: ['boxes-cluster', 'base-layer'] })
   //   console.log(features)
   // }
+
+  createSnapshot() {
+    const style = this.map.getStyle().metadata['mapbox:origin'];
+    const center = this.map.getCenter();
+    const lon = center.lng;
+    const lat = center.lat;
+    const zoom = this.map.getZoom();
+    const bearing = this.map.getBearing();
+    const pitch = this.map.getPitch();
+    const width = 1280;
+    const height = 960;
+    const scale = ''; //@2x
+    const featureArray = this.map.queryRenderedFeatures({layers:['base-layer', 'boxes-cluster', 'boxes-no-cluster']});
+    const features = arrayToFeatureCollection(featureArray);
+    console.log(features);
+
+    var url = `https://api.mapbox.com/styles/v1/mapbox/${style}/static/geojson(${features})/${lon},${lat},${zoom},${bearing},${pitch}/${width}x${height}${scale}?access_token=${environment.mapbox_token}`;
+    //console.log(url);
+
+    function arrayToFeatureCollection(array) {
+      return {"type": "FeatureCollection",
+    "features": array};
+    }
+  }
 }
