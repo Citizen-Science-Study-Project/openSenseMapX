@@ -9,7 +9,6 @@ import { UiService } from '../../ui/state/ui.service';
 import { MapService } from 'src/app/modules/explore/services/map.service';
 import { BoxService } from '../../box/state/box.service';
 import { of } from "rxjs";
-// import '../../../helper/mapPrinter.js';
 
 
 @Injectable({ providedIn: 'root' })

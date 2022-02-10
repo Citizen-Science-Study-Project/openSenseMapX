@@ -13,6 +13,10 @@ export class ShareVisComponent implements OnInit {
   baseURL = 'http://localhost:4200';
   URL = this.baseURL;
 
+  @Output() visShared = new EventEmitter();
+  @Output() pdfShared = new EventEmitter();
+  @Output() gifShared = new EventEmitter();
+
   constructor(private activatedRoute: ActivatedRoute, private uiQuery: UiQuery, private mapService: MapService) {
   }
   styleUrls: ['./share-vis.component.scss'],
@@ -37,10 +41,10 @@ export class ShareVisComponent implements OnInit {
   }
 
   sharePDF() {
-    alert("PDF");
+    this.pdfShared.emit();
   }
 
   shareGIF() {
-    alert("GIF");
+    this.gifShared.emit();
   }
 }

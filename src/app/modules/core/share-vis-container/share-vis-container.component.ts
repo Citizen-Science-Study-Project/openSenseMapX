@@ -30,5 +30,14 @@ export class ShareVisContainerComponent implements OnInit {
   shareVis() {
     console.log("this.bbox", this.bbox);
     // this.mapService.fitBounds(vis.bbox);
+    alert("shareVis method in share-vis-container");
+  }
+
+  sharePDF() {
+    alert("sharePDF method in share-vis-container");
+  }
+
+  shareGIF() {
+    alert("shareGIF method in share-vis-container");
   }
 }
