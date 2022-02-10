@@ -16,6 +16,8 @@ import { BoxQuery } from 'src/app/models/box/state/box.query';
 import { withLatestFrom } from 'rxjs/operators';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 
+import * as saveAs from 'file-saver';
+
 
 @Injectable({
   providedIn: 'root'
@@ -98,7 +100,7 @@ export class MapService {
     this.map.addControl(new NavigationControl());
 
     //once the map is laoded fetch the data (maybe move this elsewhere for faster load time), TODO: fetch from API not static file
-    this.map.once('load', function() {
+    this.map.once('load', function () {
       that.fetchData('/assets/data/world-generated.json');
     });
   }
@@ -116,7 +118,7 @@ export class MapService {
 
     let that = this;
 
-    if (this.dataSub){
+    if (this.dataSub) {
       this.dataSub.unsubscribe();
     }
 
@@ -133,16 +135,16 @@ export class MapService {
           hideOutliersData = this.outlierData(this.worldData.getValue(), res[0].title, res[3]);
           filteredData = this.filterData(hideOutliersData, res[0].title, res[1]);
         }
-        if (this.map.getLayer('boxes-cluster')){
+        if (this.map.getLayer('boxes-cluster')) {
           this.map.removeLayer('boxes-no-cluster');
           this.map.removeLayer('boxes-cluster');
           this.map.removeLayer('cluster-number-layer');
           this.map.removeLayer('no-cluster-number');
         }
-        if (this.map.getSource('cluster-boxes')){
+        if (this.map.getSource('cluster-boxes')) {
           this.map.removeSource('cluster-boxes');
         }
-        if (!this.map.getSource('boxes')){
+        if (!this.map.getSource('boxes')) {
           this.map.addSource('boxes', {
             'type': 'geojson',
             'data': filteredData,
@@ -150,7 +152,7 @@ export class MapService {
           // console.log("addsource")
         } else {
           // console.log("changeSource")
-          if (res[2]){
+          if (res[2]) {
             // console.log("RES2", res[2])
             this.map.getSource('boxes').setData(res[2]);
           } else {
@@ -171,7 +173,7 @@ export class MapService {
 
       }
       // when the sources are added subscribe to the selected Pheno for the displaying of the right layers
-      this.map.once('sourcedata', function() {
+      this.map.once('sourcedata', function () {
         that.subscribeToLayers();
       });
 
@@ -180,7 +182,7 @@ export class MapService {
 
   //subscribes to the layers in the ui-service.
   subscribeToLayers() {
-    if (this.baseLayerSub){
+    if (this.baseLayerSub) {
       this.baseLayerSub.unsubscribe();
       this.clusterLayerSub.unsubscribe();
       this.activeBoxSub.unsubscribe();
@@ -247,7 +249,7 @@ export class MapService {
     });
 
     this.numbersSub = this.numbers$.subscribe(res => {
-      if (this.map && this.map.getLayer('number-layer')){
+      if (this.map && this.map.getLayer('number-layer')) {
         this.map.setLayoutProperty('number-layer', 'visibility', res ? 'visible' : 'none');
 
       }
@@ -286,7 +288,7 @@ export class MapService {
   }
 
   drawBaseLayer(layer) {
-    if (!this.map.getLayer(layer.id)){
+    if (!this.map.getLayer(layer.id)) {
       this.map.addLayer(layer);
 
       if (this.map.getLayer('active-layer-text')){
@@ -307,7 +309,7 @@ export class MapService {
       this.addNumberLayer();
       this.addPopup('base-layer');
     }
-    if (layer.paint['circle-color']){
+    if (layer.paint['circle-color']) {
       this.map.setPaintProperty('number-layer', 'text-color', layer.paint['circle-color']);
       this.map.setLayoutProperty('number-layer', 'text-field', layer.paint['circle-color'][2]);
     }
@@ -316,12 +318,12 @@ export class MapService {
 
   drawClusterLayers(layers) {
 
-    if (this.map.getSource('cluster-boxes')){
+    if (this.map.getSource('cluster-boxes')) {
 
       layers.forEach(layer => {
 
-        if (!this.map.getLayer(layer.id)){
-          if (this.map.getLayer('active-layer-text')){
+        if (!this.map.getLayer(layer.id)) {
+          if (this.map.getLayer('active-layer-text')) {
             this.map.addLayer(layer, 'active-layer-text');
           } else {
             this.map.addLayer(layer);
@@ -331,18 +333,18 @@ export class MapService {
 
           this.map.setPaintProperty(layer.id, 'circle-color', layer.paint['circle-color']);
 
-          if (layer.filter){
+          if (layer.filter) {
             this.map.setFilter(layer.id, layer.filter);
           } else {
             this.map.setFilter(layer.id);
           }
-          if (layer.layout && layer.layout.visibility){
+          if (layer.layout && layer.layout.visibility) {
             this.map.setLayoutProperty(layer.id, 'visibility', layer.layout.visibility);
           }
         }
       });
 
-      if (!this.map.getLayer('cluster-number-layer')){
+      if (!this.map.getLayer('cluster-number-layer')) {
         this.addClusterNumberLayers(layers);
         this.addHoverCluster('boxes-cluster', layers[1]['paint']['circle-color']);
         this.addPopup('boxes-no-cluster');
@@ -360,9 +362,9 @@ export class MapService {
   //ACTIVE LAYERS
   updateActiveLayer(id, theme) {
 
-    if (id !== undefined){
+    if (id !== undefined) {
       let paint;
-      if (theme === 'dark'){
+      if (theme === 'dark') {
         paint = {
           'text-color': '#f6f6f6',
           'text-halo-blur': 4,
@@ -377,7 +379,7 @@ export class MapService {
           'text-halo-width': 1
         };
       }
-      if (!this.map.getLayer('active-layer')){
+      if (!this.map.getLayer('active-layer')) {
         this.map.addLayer({
           'id': 'active-layer-text',
           'type': 'symbol',
@@ -538,7 +540,7 @@ export class MapService {
 
   addClusterNumberLayers(layers) {
     var insertBeforeActiveLLayer = false;
-    if (this.map.getLayer('active-layer-text')){
+    if (this.map.getLayer('active-layer-text')) {
       insertBeforeActiveLLayer = true;
     }
     this.map.addLayer({
@@ -601,12 +603,12 @@ export class MapService {
 
   //CLUSTERING
   setClustering(clustering, date) {
-    if (this.map.getLayer('base-layer')){
+    if (this.map.getLayer('base-layer')) {
       this.map.setLayoutProperty('base-layer', 'visibility', clustering ? 'none' : 'visible');
       this.map.setLayoutProperty('number-layer', 'visibility', clustering ? 'none' : 'visible');
     }
-    if (this.map.getLayer('boxes-cluster')){
-      if (date){
+    if (this.map.getLayer('boxes-cluster')) {
+      if (date) {
         //   this.map.setLayoutProperty('boxes-no-cluster'+date.toISOString(), 'visibility', clustering ? 'visible' : 'none' );
         //   this.map.setLayoutProperty('cluster'+date.toISOString(), 'visibility', clustering ? 'visible' : 'none' );
         //   this.map.setLayoutProperty('cluster-number-layer'+date.toISOString(), 'visibility', clustering ? 'visible' : 'none' );
@@ -624,18 +626,18 @@ export class MapService {
 
   //MOUSE FUNCTIONS
   clusterMouseoverFunction = (e) => {
-    if (e.features.length > 0){
+    if (e.features.length > 0) {
       this.map.getCanvas().style.cursor = 'pointer';
 
       let layer = e.features[0].layer.id;
       let that = this;
-      let features = this.map.queryRenderedFeatures(e.point, {layers: [layer]});
+      let features = this.map.queryRenderedFeatures(e.point, { layers: [layer] });
       let clusterId = features[0].properties.cluster_id,
         point_count = features[0].properties.point_count,
         clusterSource = this.map.getSource(this.map.getLayer(layer).source);
 
       // Get all points under a cluster
-      clusterSource.getClusterLeaves(clusterId, point_count, 0, function(err, aFeatures) {
+      clusterSource.getClusterLeaves(clusterId, point_count, 0, function (err, aFeatures) {
         //MAKE LAYER+SOURCE AND ADD TO MAP
         that.map.getSource('cluster-hover').setData({
           type: 'FeatureCollection',
@@ -670,7 +672,7 @@ export class MapService {
 
 
   addHoverCluster(layer, circleColor) {
-    if (!this.map.getSource('cluster-hover')){
+    if (!this.map.getSource('cluster-hover')) {
       this.map.addSource('cluster-hover', {
         type: 'geojson',
         data: {
@@ -756,7 +758,7 @@ export class MapService {
       point_count = e.features[0].properties.point_count;
 
     // Get all points under a cluster
-    clusterSource.getClusterLeaves(clusterId, point_count, 0, function(err, aFeatures) {
+    clusterSource.getClusterLeaves(clusterId, point_count, 0, function (err, aFeatures) {
       that.uiService.setCluster(aFeatures);
     });
 
@@ -770,9 +772,9 @@ export class MapService {
 
       let box = e.features[0].properties;
       if (e.features[0].properties.sensors){
-        this.boxService.setPopupBox({...box, sensors: JSON.parse(e.features[0].properties.sensors)});
+        this.boxService.setPopupBox({ ...box, sensors: JSON.parse(e.features[0].properties.sensors) });
       } else {
-        this.boxService.setPopupBox({...box, sensors: []});
+        this.boxService.setPopupBox({ ...box, sensors: [] });
       }
       let pixelPosition = this.map.project(coordinates);
 
@@ -822,7 +824,7 @@ export class MapService {
   addPopup(layer) {
     let that = this;
     this.map.on('mouseenter', layer,
-      function(e) {
+      function (e) {
         that.activatePopupTimer = setTimeout(function() {
           that.baseMouseenterFunction(e);
         }, 100);
@@ -838,22 +840,22 @@ export class MapService {
 
   filterByProperty(data, property) {
     let filteredData = data['features'].filter(res => {
-      if (res['properties']['sensors']['live'] && res['properties']['sensors']['live'][property]){
+      if (res['properties']['sensors']['live'] && res['properties']['sensors']['live'][property]) {
         return res;
       }
     });
-    return {type: 'FeatureCollection', features: filteredData};
+    return { type: 'FeatureCollection', features: filteredData };
   }
 
   filterData(data, property, filter) {
     let filteredData = data['features'].filter(res => {
-      if (filter.ids){
-        if (filter.ids.indexOf(res['properties']['_id']) === -1){
+      if (filter.ids) {
+        if (filter.ids.indexOf(res['properties']['_id']) === -1) {
           return false;
         }
       }
-      if (filter.model.length > 0){
-        if (filter.model.indexOf(res['properties']['model']) === -1){
+      if (filter.model.length > 0) {
+        if (filter.model.indexOf(res['properties']['model']) === -1) {
           return false;
         }
       }
@@ -861,19 +863,19 @@ export class MapService {
         (filter.exposure === 'all' || filter.exposure === res['properties']['exposure']) &&
         // (filter.model.length === 0 || filter.model.indexOf(res['properties']['model'] != -1)) &&
         (filter.group === null || filter.group === res.group)
-      ){
+      ) {
       } else {
         return;
       }
-      if (property){
-        if (res['properties']['sensors']['live'] && res['properties']['sensors']['live'][property]){
+      if (property) {
+        if (res['properties']['sensors']['live'] && res['properties']['sensors']['live'][property]) {
           return res;
         }
       } else {
         return res;
       }
     });
-    return {type: 'FeatureCollection', features: filteredData};
+    return { type: 'FeatureCollection', features: filteredData };
 
   }
 
@@ -894,7 +896,7 @@ export class MapService {
   // THEMING
   setThemeDark(dateRange) {
 
-    if (this.baseLayerSub){
+    if (this.baseLayerSub) {
       this.baseLayerSub.unsubscribe();
       this.clusterLayerSub.unsubscribe();
       this.activeBoxSub.unsubscribe();
@@ -905,7 +907,7 @@ export class MapService {
     }
 
     let that = this;
-    if (dateRange){
+    if (dateRange) {
       let steps = extractDateSteps(dateRange);
       steps.forEach(step => {
         this.map.off('mouseleave', 'boxes-no-cluster' + step.toISOString(), this.mouseLeaveFunction);
@@ -932,7 +934,7 @@ export class MapService {
     this.map.setPaintProperty('active-layer', 'circle-color', '#ffffff');
     this.map.setStyle('mapbox://styles/mapbox/dark-v9');
 
-    this.map.once('styledata', function() {
+    this.map.once('styledata', function () {
       setTimeout(() => {
         that.addMapSources();
         // that.initLayersWithoutSub();
@@ -948,7 +950,7 @@ export class MapService {
 
   setThemeLight(dateRange) {
 
-    if (this.baseLayerSub){
+    if (this.baseLayerSub) {
       this.baseLayerSub.unsubscribe();
       this.clusterLayerSub.unsubscribe();
       this.activeBoxSub.unsubscribe();
@@ -959,7 +961,7 @@ export class MapService {
     }
 
     let that = this;
-    if (dateRange){
+    if (dateRange) {
       let steps = extractDateSteps(dateRange);
       steps.forEach(step => {
         this.map.off('mouseleave', 'boxes-no-cluster' + step.toISOString(), this.mouseLeaveFunction);
@@ -987,7 +989,7 @@ export class MapService {
     this.map.setStyle('mapbox://styles/mapbox/light-v9');
 
 
-    this.map.once('styledata', function() {
+    this.map.once('styledata', function () {
       setTimeout(() => {
         that.addMapSources();
         // that.initLayersWithoutSub();
@@ -1009,7 +1011,7 @@ export class MapService {
   }
 
   hideAllBaseLayers() {
-    if (this.map.getLayer('base-layer')){
+    if (this.map.getLayer('base-layer')) {
       this.map.setLayoutProperty('base-layer', 'visibility', 'none');
       this.map.setLayoutProperty('number-layer', 'visibility', 'none');
       this.map.setLayoutProperty('boxes-no-cluster', 'visibility', 'none');
@@ -1020,7 +1022,7 @@ export class MapService {
   }
 
   flyTo(coordinates) {
-    this.map.flyTo({center: coordinates, zoom: 13});
+    this.map.flyTo({ center: coordinates, zoom: 13 });
   }
 
   // reactivateBaseLayer(){
@@ -1034,4 +1036,14 @@ export class MapService {
   //   const features = this.map.queryRenderedFeatures([[0,0],[180,180]], { layers: ['boxes-cluster', 'base-layer'] })
   //   console.log(features)
   // }
+
+  printPDF() {
+    this.map.once('idle', () => {
+      this.map.getCanvas().toBlob((blob) => {
+        //console.log(blob);
+        saveAs(blob, 'map.png');
+      });
+    });
+  }
 }
+
