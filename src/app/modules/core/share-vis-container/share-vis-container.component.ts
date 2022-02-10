@@ -32,7 +32,7 @@ export class ShareVisContainerComponent implements OnInit {
   }
 
   sharePDF() {
-    alert("sharePDF method in share-vis-container");
+    this.mapService.printPDF();
   }
 
   shareGIF() {

@@ -34,6 +34,7 @@
     "bulma-calendar": "^6.1.6",
     "bulma-checkradio": "^1.1.1",
     "dotenv": "^8.6.0",
+    "file-saver": "^2.0.5",
     "mapbox-gl": "^1.13.1",
     "ngx-color-picker": "^11.0.0",
     "normalizr": "^3.6.1",
