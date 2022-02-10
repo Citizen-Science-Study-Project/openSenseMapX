@@ -28,6 +28,14 @@ export class ShareVisContainerComponent implements OnInit {
   }
 
   shareVis() {
-    this.visService.generatePDF();
+    alert("shareVis method in share-vis-container");
+  }
+
+  sharePDF() {
+    alert("sharePDF method in share-vis-container");
+  }
+
+  shareGIF() {
+    alert("shareGIF method in share-vis-container");
   }
 }

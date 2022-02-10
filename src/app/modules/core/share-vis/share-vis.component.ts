@@ -9,6 +9,8 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output
 export class ShareVisComponent implements OnInit {
 
   @Output() visShared = new EventEmitter();
+  @Output() pdfShared = new EventEmitter();
+  @Output() gifShared = new EventEmitter();
 
   constructor() { }
 
@@ -17,5 +19,13 @@ export class ShareVisComponent implements OnInit {
 
   shareVis() {
     this.visShared.emit();
+  }
+
+  sharePDF() {
+    this.pdfShared.emit();
+  }
+
+  shareGIF() {
+    this.gifShared.emit();
   }
 }

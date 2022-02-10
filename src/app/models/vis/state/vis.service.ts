@@ -8,7 +8,6 @@ import { SessionService } from '../../session/state/session.service';
 import { UiService } from '../../ui/state/ui.service';
 import { MapService } from 'src/app/modules/explore/services/map.service';
 import { BoxService } from '../../box/state/box.service';
-import '../../../helper/mapPrinter.js';
 
 
 @Injectable({ providedIn: 'root' })
