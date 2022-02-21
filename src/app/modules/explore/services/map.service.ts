@@ -19,7 +19,7 @@ import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import * as saveAs from 'file-saver';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-
+import * as $ from 'jquery';
 
 @Injectable({
   providedIn: 'root'
@@ -1013,55 +1013,69 @@ export class MapService {
   // }
 
   printMap(format) {
-    let renderMap = this.map;
+    let renderMap = this.map; //make a copy of the map
+    let mapContainer = $('#map'); //get the map's container
+    let mapLegend = $('#all-legend').clone(true); //clone the map legend
+    mapLegend.children().last().remove(); //remove the statistics part from the legend
+    let improveMapText = $('.mapbox-improve-map').first().text(); //save the improve map text
+
+    hideMapElements(); //Hide elements from the map that should not be printed
+
+    var legend = $('<div></div>'); //create a new div container for the legend
+    legend.addClass('map-overlay'); //add a new mapbox overlay
+    legend.append(mapLegend); //copy the existing legend to the new one
+    legend.css('position', 'absolute'); //legend position
+    legend.css('left', '0');
+    legend.css('top', '0');
+    legend.css('background', 'white'); //legend background color
+    legend.css('opacity', '0.7'); //legend background opacity
+    mapContainer.append(legend); //add legend to map
+
+    //once the map is fully rendered
     renderMap.once('idle', () => {
-      let canvas = renderMap.getCanvas();
-      if (format == 'img') {
-        console.log("Printing image ...");
-        canvas.toBlob((blob) => {
-          saveAs(blob, 'map.png');
-        });
-      }
-
-      if (format == 'pdf') {
-        console.log('Printing PDF...');
-        const contentDataURL = canvas.toDataURL('image/png');
-        let imgWidth = 208;
-        let imgHeight = canvas.height * imgWidth / canvas.width;
-        let pdf = new jsPDF('p', 'mm', 'a4'); // A4 size page of PDF  
-        let position = 0;
-        pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight)
-        pdf.save('MYPdf.pdf'); // Generated PDF   
-      }
+      //convert the html container into a canvas element
+      html2canvas(mapContainer[0]).then(function (canvas) {
+        //save image (PNG)
+        if (format == 'img') {
+          console.log("Printing image ...");
+          canvas.toBlob((blob) => {
+            saveAs(blob, 'vis.png');
+          });
+        }
+        //save PDF
+        if (format == 'pdf') {
+          console.log('Printing PDF...');
+          const contentDataURL = canvas.toDataURL('image/png');
+          let imgWidth = 208;
+          let imgHeight = canvas.height * imgWidth / canvas.width;
+          let pdf = new jsPDF('p', 'mm', 'a4');
+          let position = 0;
+          pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight)
+          pdf.save('vis.pdf');
+        }
+      });
+      restoreMap(); //restore the map defaults
     });
-    renderMap.setZoom(renderMap.getZoom());
-  }
+    renderMap.setZoom(renderMap.getZoom()); //Fix to trigger the map's idle event
 
-  /*   var hidden = document.createElement('div');
- hidden.className = 'hidden-map';
- document.body.appendChild(hidden);
- var container = document.createElement('div');
- container.style.width = '1000'; //this.map.getContainer().clientWidth;
- container.style.height = '1000'; //this.map.getContainer().clientHeight;
- hidden.appendChild(container);
- var legend = document.createElement('div');
- legend.className = 'map-overlay';
- legend.innerHTML = 'TESTTEXT';
- legend.style.position = 'absolute';
- legend.style.right = '0';
- legend.style.bottom = '0';
- 
- var renderMap = new mapboxgl.Map({
-   container: container,
-   center: this.map.getCenter(),
-   zoom: this.map.getZoom(),
-   style: this.map.getStyle(),
-   bearing: this.map.getBearing(),
-   pitch: this.map.getPitch(),
-   interactive: false,
-   preserveDrawingBuffer: true,
-   fadeDuration: 0,
- });
- 
- container.appendChild(legend); */
+    function hideMapElements() {
+      $('.mapboxgl-ctrl-top-right').first().css('visibility', 'hidden'); //hide map controls
+      $('.mapbox-improve-map').first().text(''); //hide improve map text
+    }
+
+    function restoreMap() {
+      legend.remove(); //remove legend from the map
+      $('.mapboxgl-ctrl-top-right').first().css('visibility', 'visible'); //restore map controls
+      $('.mapbox-improve-map').first().text(improveMapText); //restore improve map text
+      renderMap.setZoom(renderMap.getZoom()); //Fix to print multiple times for the same view
+    }
+  }
+  /* TO DO:
+  - Adjust image and pdf layout and sizing
+  - change ui 
+    - side bar?
+    - selector for image/pdf
+    - selection for legend 
+  - merge Maria's branch
+   */
 }
