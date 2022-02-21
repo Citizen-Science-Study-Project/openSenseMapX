@@ -2,14 +2,12 @@ import { Injectable } from '@angular/core';
 import { VisStore } from './vis.store';
 import { Vis } from './vis.model';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { flatMap, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { SessionService } from '../../session/state/session.service';
 import { UiService } from '../../ui/state/ui.service';
 import { MapService } from 'src/app/modules/explore/services/map.service';
 import { BoxService } from '../../box/state/box.service';
-import { of } from "rxjs";
-// import '../../../helper/mapPrinter.js';
 
 
 @Injectable({ providedIn: 'root' })

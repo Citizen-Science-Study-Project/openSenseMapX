@@ -32,8 +32,6 @@
               "src/_redirects"
             ],
             "styles": [
-              "node_modules/ngx-sharebuttons/themes/circles.scss",
-              "node_modules/ngx-sharebuttons/themes/modern.scss",
               "node_modules/@fortawesome/fontawesome-free/css/all.css",
               "src/styles.scss",
               "node_modules/mapbox-gl/dist/mapbox-gl.css"
@@ -111,6 +109,19 @@
             "scripts": []
           }
         },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "tsconfig.app.json",
+              "tsconfig.spec.json",
+              "e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
@@ -128,7 +139,6 @@
   },
   "defaultProject": "openSenseMapX",
   "cli": {
-    "analytics": false,
     "defaultCollection": "@datorama/akita"
   }
 }
