@@ -1,7 +1,4 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MapService } from '../../explore/services/map.service';
-import { UiQuery } from '../../../models/ui/state/ui.query';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'osem-share-vis',
@@ -19,13 +16,9 @@ export class ShareVisComponent implements OnInit {
   @Output() gifShared = new EventEmitter();
 
   constructor(private activatedRoute: ActivatedRoute, private uiQuery: UiQuery, private mapService: MapService) {
+    changeDetection: ChangeDetectionStrategy.OnPush
   }
-  styleUrls: ['./share-vis.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
-  @Output() visShared = new EventEmitter();
 
-  ngOnInit() {
-  }
 
   shareWebMap() {
     const bbox = this.mapService.getBounds();

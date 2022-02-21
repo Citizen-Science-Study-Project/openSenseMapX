@@ -21,13 +21,11 @@ import { ShareVisContainerComponent } from './modules/core/share-vis-container/s
 import { FaqComponent } from './modules/core/faq/faq.component';
 import { DonateComponent } from './modules/core/donate/donate.component';
 import { ThanksComponent } from './modules/core/thanks/thanks.component';
-import { ShareComponent } from './modules/core/share/share.component';
 
 
 const routes: Routes = [
   {path: '', component: BoxSingleContainerComponent, pathMatch: 'full'},
   {path: 'explore/:id', component: BoxSingleContainerComponent},
-  {path: 'share/:bbox', component: ShareComponent},
   {path: 'compare', component: BoxCompareContainerComponent},
   // {path: 'impressum', component: ImpressumComponent},
   // {path: 'about', component: ImpressumComponent},

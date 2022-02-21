@@ -33,12 +33,7 @@ import { LegendEditContainerComponent } from './legend/legend-edit-container/leg
 import { LegendEditComponent } from './legend/legend-edit/legend-edit.component';
 
 @NgModule({
-  declarations: [BaseMapContainerComponent, BaseMapComponent, BoxContainerComponent, BoxValuesComponent,
-    BoxChartComponent, LegendContainerComponent, LegendComponent, TimeSliderContainerComponent, TimeSliderComponent,
-    OsemLineChartComponent, OsemLineSeriesComponent, BoxSingleContainerComponent, BoxSingleValuesComponent,
-    BoxCompareContainerComponent, BoxCompareValuesComponent, PopupComponent, PopupContainerComponent,
-    MapOptionsContainerComponent, MapOptionsComponent, ChartDatepickerComponent, MapLoadingComponent,
-    LegendEditContainerComponent, LegendEditComponent],
+  declarations: [BaseMapContainerComponent, BaseMapComponent, BoxContainerComponent, BoxValuesComponent, BoxChartComponent, LegendContainerComponent, LegendComponent, TimeSliderContainerComponent, TimeSliderComponent, OsemLineChartComponent, OsemLineSeriesComponent, BoxSingleContainerComponent, BoxSingleValuesComponent, BoxCompareContainerComponent, BoxCompareValuesComponent, PopupComponent, PopupContainerComponent, MapOptionsContainerComponent, MapOptionsComponent, ChartDatepickerComponent, MapLoadingComponent, LegendEditContainerComponent, LegendEditComponent],
   imports: [
     CommonModule,
     SharedModule,
@@ -51,8 +46,6 @@ import { LegendEditComponent } from './legend/legend-edit/legend-edit.component'
     ColorPickerModule
   ],
   providers: [MapService],
-  exports: [BaseMapContainerComponent, LegendContainerComponent, TimeSliderContainerComponent, PopupContainerComponent,
-    MapOptionsContainerComponent, LegendContainerComponent]
+  exports: [BaseMapContainerComponent, LegendContainerComponent, TimeSliderContainerComponent, PopupContainerComponent, MapOptionsContainerComponent, LegendContainerComponent]
 })
-export class ExploreModule {
-}
+export class ExploreModule { }
