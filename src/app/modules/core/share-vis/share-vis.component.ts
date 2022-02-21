@@ -14,6 +14,7 @@ export class ShareVisComponent implements OnInit {
   URL = this.baseURL;
 
   @Output() visShared = new EventEmitter();
+  @Output() imgShared = new EventEmitter();
   @Output() pdfShared = new EventEmitter();
   @Output() gifShared = new EventEmitter();
 
@@ -38,6 +39,10 @@ export class ShareVisComponent implements OnInit {
     this.URL = `${this.baseURL}/share/${bbox.join()}?${paramsURL.join('&')}`;
     // http://localhost:4200/share/13.5123939167743,52.53654639491532,13.613392628220424,52.58341402678505?mapPheno=Luftdruck
     console.log('URL', this.URL);
+  }
+
+  shareImage() {
+    this.imgShared.emit();
   }
 
   sharePDF() {

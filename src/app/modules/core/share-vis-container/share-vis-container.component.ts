@@ -33,8 +33,12 @@ export class ShareVisContainerComponent implements OnInit {
     alert("shareVis method in share-vis-container");
   }
 
+  shareImage() {
+    this.mapService.printMap("img");
+  }
+
   sharePDF() {
-    this.mapService.printPDF();
+    this.mapService.printMap("pdf");
   }
 
   shareGIF() {
