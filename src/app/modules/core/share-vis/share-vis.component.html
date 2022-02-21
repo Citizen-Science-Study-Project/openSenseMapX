@@ -1,11 +1,11 @@
-<div id="share-vis-window">
+<div id="share-vis-window" class="osem-padding">
   <h1 class="title is-1">{{'SHARE_VIS' | translate}}</h1>
-  <div class="osem-padding share-vis-box">
+  <div class="share-vis-box">
     <div class="share-vis-elem">
       <div class="share-vis-preview">
         <img src="/assets/img/test/share-preview-webmap.jpeg">
       </div>
-      <button class="osem-button" (click)="shareVis()">{{'WEB_MAP' | translate}}</button>
+      <button class="osem-button" (click)="shareWebMap()">{{'WEB_MAP' | translate}}</button>
     </div>
     <div class="share-vis-elem">
       <div class="share-vis-preview">
@@ -20,4 +20,16 @@
       <button class="osem-button" (click)="shareImage()">{{'Image' | translate}}</button>
     </div>
   </div>
+</div>
+      <button class="osem-button" (click)="shareVis()">{{'GIF' | translate}}</button>
+    </div>
+  </div>
+  <share-buttons id="share-osm" theme="circles-dark"
+                 [include]="['copy', 'facebook', 'linkedin', 'telegram', 'whatsapp']"
+                 [showIcon]="true"
+                 [showText]="false"
+                 url="{{URL}}"
+                 description="OpenSenseMap"
+                 class="pt-5">
+  </share-buttons>
 </div>

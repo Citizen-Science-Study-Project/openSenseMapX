@@ -3,7 +3,7 @@
     <div class="modal-card">
         <header class="modal-card-head">
           <p class="modal-card-title">{{'INTRO_HEADLINE' | translate}}</p>
-          <button class="delete" aria-label="close" (click)="closeIntro()"></button>
+          <button id="close-intro" class="delete" aria-label="close" (click)="closeIntro()"></button>
         </header>
         <section class="modal-card-body">
             <div class="content">
@@ -43,7 +43,7 @@
 <!-- <osem-map-options-container></osem-map-options-container> -->
 
 <!-- INFO PHENO MODAL: TODO: rename -->
-<osem-pheno-info-modal *ngIf="infoPheno$ | async"></osem-pheno-info-modal> 
+<osem-pheno-info-modal *ngIf="infoPheno$ | async"></osem-pheno-info-modal>
 
 <div id="backdrop" *ngIf="sidebarOutlet.isActivated">
 

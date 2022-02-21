@@ -251,7 +251,7 @@ export class MapService {
       }
     })
 
-    // this.dateRangeData$.subscribe(res => {  
+    // this.dateRangeData$.subscribe(res => {
     //   if(res){
     //     // if(!this.map.getSource('date-range-boxes')){
     //     //   this.map.addSource('date-range-boxes', {
@@ -979,9 +979,11 @@ export class MapService {
   }
 
   getBounds() {
+    console.log("this.map.getBounds()", this.map.getBounds())
     return this.map.getBounds().toArray();
   }
   fitBounds(bbox) {
+    console.log("bbox 222", bbox)
     this.map.fitBounds(bbox);
   }
 

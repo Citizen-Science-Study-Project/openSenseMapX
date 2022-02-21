@@ -80,7 +80,7 @@ input {
 }
 
 
-input:focus { 
+input:focus {
     color: var(--primary-color)
 }
 
@@ -113,7 +113,7 @@ h2,h3,h4 {
 
 
 
-//shadows 
+//shadows
 
 .osem-box-shadow-basic {
     box-shadow: var(--box-shadow-basic);
@@ -174,7 +174,7 @@ h2,h3,h4 {
         cursor: not-allowed;
     }
 
-    
+
 }
 
 
@@ -281,7 +281,7 @@ h2,h3,h4 {
 
 .datepicker-container {
     position: relative;
-    
+
     .owl-date-time-trigger {
         display: flex;
         justify-content: space-evenly;
@@ -315,7 +315,7 @@ h2,h3,h4 {
 
 a {
     color: var(--color-primary);
-    cursor: pointer;    
+    cursor: pointer;
 }
 
 
@@ -373,4 +373,12 @@ input.ng-invalid {
 
 .osem-clickable {
     cursor: pointer;
+}
+
+.delete, .modal-close {
+    position: fixed;
+}
+
+.is-medium.delete, .is-medium.modal-close {
+    position: relative;
 }

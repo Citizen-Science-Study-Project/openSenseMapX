@@ -30,3 +30,13 @@ img {
     display: flex;
     padding: 5%;
 }
+
+#share-osm {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.svg-inline--fa {
+    vertical-align: -0.25em !important;
+}

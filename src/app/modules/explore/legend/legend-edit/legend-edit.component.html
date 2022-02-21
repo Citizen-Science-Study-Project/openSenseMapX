@@ -5,23 +5,23 @@
 
         <div class="legend-form">
             <form [formGroup]="legendForm">
-        
+
                 <div *ngIf="legendStepsControls">
                     <div formArrayName="legendSteps">
-        
+
                         <div *ngFor="let step of legendStepsControls.controls; let i=index">
-                            
+
                             <div class="field">
                                 <div class="notification">
-                                    <button class="delete is-medium has-background-danger" (click)="removeLegendStep(i)"></button>
-                                        
+                                    <button id="remove-color" class="delete is-medium has-background-danger" (click)="removeLegendStep(i)"></button>
+
                                     <div [formGroupName]="i">
                                         <div class="field is-expanded">
                                             <div class="control has-icons-left">
                                                 <div class="icon is-small is-left color-icon"  [(colorPicker)]="step.controls.color.value" [style.background]="step.controls.color.value">
                                                     <i class="fa fa-filter"></i>
                                                 </div>
-                                    
+
                                                 <p class="control is-expanded">
                                                     <input
                                                     formControlName="value"
@@ -63,6 +63,6 @@
             </div>
         </ng-container>
 
-        
+
     </ng-container> -->
 </div>

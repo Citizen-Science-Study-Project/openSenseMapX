@@ -10,6 +10,10 @@ osem-nav-container {
     }
 }
 
+#close-intro {
+    position: relative;
+}
+
 #intro-layer {
     .intro-text {
         max-width: 400px;
@@ -91,7 +95,7 @@ osem-map-options-container {
     right: 10px;
     top: 160px;
     z-index: 9;
-    
+
 }
 
 #osem-popup {

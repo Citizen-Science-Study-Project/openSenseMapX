@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AkitaNgFormsManager } from '@datorama/akita-ng-forms-manager';
 import { FormBuilder, Validators } from '@angular/forms';
-import { ChangeDetectionStrategy } from '@angular/compiler/src/core';
+import { ChangeDetectionStrategy } from '@angular/core';
 
 export interface FormsState {
   general: {
@@ -34,7 +34,7 @@ export class ProfileBoxCreateGeneralComponent implements OnInit {
       exposure: ['outdoor', Validators.required],
       desc: [null],
       tags: [null]
-    }); 
+    });
     this.formsManager.upsert('general', this.generalForm);
   }
 
