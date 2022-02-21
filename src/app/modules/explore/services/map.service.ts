@@ -17,6 +17,8 @@ import { withLatestFrom } from 'rxjs/operators';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 
 import * as saveAs from 'file-saver';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 
 @Injectable({
@@ -1010,12 +1012,56 @@ export class MapService {
   //   console.log(features)
   // }
 
-  printPDF() {
-    this.map.once('idle', () => {
-      this.map.getCanvas().toBlob((blob) => {
-        //console.log(blob);
-        saveAs(blob, 'map.png');
-      });
+  printMap(format) {
+    let renderMap = this.map;
+    renderMap.once('idle', () => {
+      let canvas = renderMap.getCanvas();
+      if (format == 'img') {
+        console.log("Printing image ...");
+        canvas.toBlob((blob) => {
+          saveAs(blob, 'map.png');
+        });
+      }
+
+      if (format == 'pdf') {
+        console.log('Printing PDF...');
+        const contentDataURL = canvas.toDataURL('image/png');
+        let imgWidth = 208;
+        let imgHeight = canvas.height * imgWidth / canvas.width;
+        let pdf = new jsPDF('p', 'mm', 'a4'); // A4 size page of PDF  
+        let position = 0;
+        pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight)
+        pdf.save('MYPdf.pdf'); // Generated PDF   
+      }
     });
+    renderMap.setZoom(renderMap.getZoom());
   }
+
+  /*   var hidden = document.createElement('div');
+ hidden.className = 'hidden-map';
+ document.body.appendChild(hidden);
+ var container = document.createElement('div');
+ container.style.width = '1000'; //this.map.getContainer().clientWidth;
+ container.style.height = '1000'; //this.map.getContainer().clientHeight;
+ hidden.appendChild(container);
+ var legend = document.createElement('div');
+ legend.className = 'map-overlay';
+ legend.innerHTML = 'TESTTEXT';
+ legend.style.position = 'absolute';
+ legend.style.right = '0';
+ legend.style.bottom = '0';
+ 
+ var renderMap = new mapboxgl.Map({
+   container: container,
+   center: this.map.getCenter(),
+   zoom: this.map.getZoom(),
+   style: this.map.getStyle(),
+   bearing: this.map.getBearing(),
+   pitch: this.map.getPitch(),
+   interactive: false,
+   preserveDrawingBuffer: true,
+   fadeDuration: 0,
+ });
+ 
+ container.appendChild(legend); */
 }
