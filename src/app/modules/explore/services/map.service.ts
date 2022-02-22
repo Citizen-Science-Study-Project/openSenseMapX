@@ -1077,5 +1077,6 @@ export class MapService {
     - selector for image/pdf
     - selection for legend 
   - merge Maria's branch
+  - GIF
    */
 }
