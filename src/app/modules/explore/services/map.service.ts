@@ -1015,8 +1015,12 @@ export class MapService {
   printMap(format) {
     let renderMap = this.map; //make a copy of the map
     let mapContainer = $('#map'); //get the map's container
-    let mapLegend = $('#all-legend').clone(true); //clone the map legend
-    mapLegend.children().last().remove(); //remove the statistics part from the legend
+    let mapLegend = $('#legend').clone(true); //clone the map legend
+
+    if ($('.stats-headline').length != 0) {
+      mapLegend.children().children().children().children().children().last().remove(); //remove the statistics part from the legend
+    }
+
     let improveMapText = $('.mapbox-improve-map').first().text(); //save the improve map text
 
     hideMapElements(); //Hide elements from the map that should not be printed
@@ -1071,12 +1075,13 @@ export class MapService {
     }
   }
   /* TO DO:
+  - fix legend bars
+  - merge Maria's branch
   - Adjust image and pdf layout and sizing
-  - change ui 
+  - change ui?
     - side bar?
     - selector for image/pdf
     - selection for legend 
-  - merge Maria's branch
   - GIF
    */
 }
