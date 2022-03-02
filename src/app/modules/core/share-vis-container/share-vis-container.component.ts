@@ -3,6 +3,8 @@ import { UiQuery } from 'src/app/models/ui/state/ui.query';
 import { VisService } from 'src/app/models/vis/state/vis.service';
 import { MapService } from '../../explore/services/map.service';
 
+import * as $ from 'jquery';
+
 @Component({
   selector: 'osem-share-vis-container',
   templateUrl: './share-vis-container.component.html',
@@ -30,18 +32,32 @@ export class ShareVisContainerComponent implements OnInit {
   shareVis() {
     console.log("this.bbox", this.bbox);
     // this.mapService.fitBounds(vis.bbox);
-    alert("shareVis method in share-vis-container");
+    $('#share-vis-options-static').removeClass('active');
+    $('#share-vis-options-gif').removeClass('active');
+    $('#share-vis-options-link').addClass('active');
   }
 
-  shareImage() {
-    this.mapService.printMap("img");
-  }
+  shareStaticMap() {
+    $('#share-vis-options-link').removeClass('active');
+    $('#share-vis-options-gif').removeClass('active');
+    $('#share-vis-options-static').addClass('active');
 
-  sharePDF() {
-    this.mapService.printMap("pdf");
+    $('#exportStaticMap').on('click', () => {
+      let format;
+
+      if ($('#formatSwitch:checked').length != 0) {
+        format = "img";
+      } else {
+        format = "pdf";
+      }
+
+      this.mapService.printMap(format);
+    });
   }
 
   shareGIF() {
-    alert("shareGIF method in share-vis-container");
+    $('#share-vis-options-link').removeClass('active');
+    $('#share-vis-options-static').removeClass('active');
+    $('#share-vis-options-gif').addClass('active');
   }
 }

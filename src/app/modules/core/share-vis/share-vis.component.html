@@ -11,13 +11,34 @@
       <div class="share-vis-preview">
         <img src="/assets/img/test/share-preview-pdf.jpeg">
       </div>
-      <button class="osem-button" (click)="sharePDF()">{{'PDF' | translate}}</button>
+      <button class="osem-button" (click)="shareStaticMap()">{{'STATIC MAP' | translate}}</button>
     </div>
     <div class="share-vis-elem">
       <div class="share-vis-preview">
         <img src="/assets/img/test/share-preview-gif.jpeg">
       </div>
-      <button class="osem-button" (click)="shareImage()">{{'Image' | translate}}</button>
+      <button class="osem-button" (click)="shareGIF()">{{'GIF' | translate}}</button>
+    </div>
+  </div>
+  <div class="share-vis-box">
+    <div class="share-vis-options" id="share-vis-options-link">
+      <p>Options for Link</p>
+    </div>
+    <div class="share-vis-options" id="share-vis-options-static">
+      <label class="switch">
+        <input id="legendSwitch" type="checkbox">
+        <span class="slider round"></span>
+        Legend?
+      </label>
+      <label class="switch">
+        <input id="formatSwitch" type="checkbox">
+        <span class="slider round"></span>
+        Format?
+      </label>
+      <button class="osem-button" id="exportStaticMap">{{'EXPORT' | translate}}</button>
+    </div>
+    <div class="share-vis-options" id="share-vis-options-gif">
+      <p>Options for GIF</p>
     </div>
   </div>
   <share-buttons id="share-osm" theme="circles-dark"
