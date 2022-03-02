@@ -1087,5 +1087,6 @@ export class MapService {
     - improve appearance
     - side bar?
   - GIF
+  test
    */
 }
