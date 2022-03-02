@@ -1,4 +1,7 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { MapService } from '../../explore/services/map.service';
+import { UiQuery } from '../../../models/ui/state/ui.query';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'osem-share-vis',
@@ -18,6 +21,9 @@ export class ShareVisComponent implements OnInit {
     changeDetection: ChangeDetectionStrategy.OnPush
   }
 
+  ngOnInit() {
+
+  }
 
   shareWebMap() {
     const bbox = this.mapService.getBounds();
