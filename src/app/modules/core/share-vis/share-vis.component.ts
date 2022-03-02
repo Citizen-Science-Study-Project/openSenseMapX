@@ -15,8 +15,7 @@ export class ShareVisComponent implements OnInit {
   URL = this.baseURL;
 
   @Output() visShared = new EventEmitter();
-  @Output() imgShared = new EventEmitter();
-  @Output() pdfShared = new EventEmitter();
+  @Output() staticMapShared = new EventEmitter();
   @Output() gifShared = new EventEmitter();
 
   constructor(private activatedRoute: ActivatedRoute, private uiQuery: UiQuery, private mapService: MapService) {
@@ -39,12 +38,8 @@ export class ShareVisComponent implements OnInit {
     console.log('URL', this.URL);
   }
 
-  shareImage() {
-    this.imgShared.emit();
-  }
-
-  sharePDF() {
-    this.pdfShared.emit();
+  shareStaticMap() {
+    this.staticMapShared.emit();
   }
 
   shareGIF() {

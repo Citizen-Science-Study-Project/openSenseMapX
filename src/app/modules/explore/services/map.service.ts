@@ -1060,8 +1060,10 @@ export class MapService {
     legend.css('top', '0');
     legend.css('background', 'white'); //legend background color
     legend.css('opacity', '0.7'); //legend background opacity
-    mapContainer.append(legend); //add legend to map
 
+    if ($('#legendSwitch:checked').length != 0) {
+      mapContainer.append(legend); //add legend to map
+    }
     //once the map is fully rendered
     renderMap.once('idle', () => {
       //convert the html container into a canvas element
@@ -1077,9 +1079,9 @@ export class MapService {
         if (format == 'pdf') {
           console.log('Printing PDF...');
           const contentDataURL = canvas.toDataURL('image/png');
-          let imgWidth = 208;
+          let imgWidth = 297;
           let imgHeight = canvas.height * imgWidth / canvas.width;
-          let pdf = new jsPDF('p', 'mm', 'a4');
+          let pdf = new jsPDF('l', 'mm', 'a4');
           let position = 0;
           pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight)
           pdf.save('vis.pdf');
@@ -1100,15 +1102,17 @@ export class MapService {
       $('.mapbox-improve-map').first().text(improveMapText); //restore improve map text
       renderMap.setZoom(renderMap.getZoom()); //Fix to print multiple times for the same view
     }
+
+    function addLegend() {
+
+    }
   }
   /* TO DO:
   - fix legend bars
   - merge Maria's branch
-  - Adjust image and pdf layout and sizing
-  - change ui?
+  - UI
+    - improve appearance
     - side bar?
-    - selector for image/pdf
-    - selection for legend 
   - GIF
    */
 }
