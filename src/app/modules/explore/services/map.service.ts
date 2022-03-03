@@ -1046,6 +1046,11 @@ export class MapService {
 
     if ($('.stats-headline').length != 0) {
       mapLegend.children().children().children().children().children().last().remove(); //remove the statistics part from the legend
+    } else {
+      //Fix legend gradient bar
+      let gradient = mapLegend.children().children().children().children().last();
+      gradient.css('height', '100%');
+      gradient.css('margin', '0');
     }
 
     let improveMapText = $('.mapbox-improve-map').first().text(); //save the improve map text
@@ -1102,15 +1107,5 @@ export class MapService {
       $('.mapbox-improve-map').first().text(improveMapText); //restore improve map text
       renderMap.setZoom(renderMap.getZoom()); //Fix to print multiple times for the same view
     }
-
-    function addLegend() {
-
-    }
   }
-  /* TO DO:
-  - fix legend bars
-  - UI
-    - improve appearance
-  - GIF
-   */
 }

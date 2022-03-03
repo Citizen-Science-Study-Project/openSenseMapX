@@ -1,7 +1,9 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MapService } from '../../explore/services/map.service';
 import { UiQuery } from '../../../models/ui/state/ui.query';
 import { ActivatedRoute } from '@angular/router';
+import * as $ from 'jquery';
+
 
 @Component({
   selector: 'osem-share-vis',
@@ -22,9 +24,14 @@ export class ShareVisComponent implements OnInit {
   }
 
   ngOnInit() {
+
   }
 
   shareWebMap() {
+    $('#share-vis-options-static').removeClass('active');
+    $('#share-vis-options-gif').removeClass('active');
+    $('#share-vis-options-link').addClass('active');
+
     const bbox = this.mapService.getBounds();
     console.log('BBOX', bbox);
     console.log('BBOX STRING', bbox.join());
@@ -39,10 +46,28 @@ export class ShareVisComponent implements OnInit {
   }
 
   shareStaticMap() {
-    this.staticMapShared.emit();
+    $('#share-vis-options-link').removeClass('active');
+    $('#share-vis-options-gif').removeClass('active');
+    $('#share-vis-options-static').addClass('active');
+
+    $('#exportStaticMap').on('click', () => {
+      let format;
+
+      if ($('#png:checked').length != 0) {
+        format = 'img';
+      } else {
+        format = 'pdf';
+      }
+
+      this.mapService.printMap(format);
+
+      $('#static-share-buttons').addClass('active');
+    });
   }
 
   shareGIF() {
-    this.gifShared.emit();
+    $('#share-vis-options-link').removeClass('active');
+    $('#share-vis-options-static').removeClass('active');
+    $('#share-vis-options-gif').addClass('active');
   }
 }

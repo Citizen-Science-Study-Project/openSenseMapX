@@ -1,3 +1,5 @@
+@import '../../../../styles.scss';
+
 #share-vis-window {
     width: 100%;
 }
@@ -6,11 +8,11 @@
     text-align: center;
 }
 
-.share-vis-options {
+.share-vis-options, #static-share-buttons {
   display: none;
 }
 
-.share-vis-options.active {
+.share-vis-options.active, #static-share-buttons.active {
   display: block;
 }
 
@@ -25,7 +27,7 @@
     overflow: hidden;
 }
 
-.osem-button {
+.share-type-button {
     margin-top: 10%;
     width: 100%;
 }
@@ -111,4 +113,16 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+#exportStaticMap {
+  width: 25%;
+}
+
+#legendSwitch:checked + .slider {
+  background: green;
+}
+
+.share-vis-options-static-elem {
+  padding-top: 2.5%;
 }
