@@ -1109,11 +1109,8 @@ export class MapService {
   }
   /* TO DO:
   - fix legend bars
-  - merge Maria's branch
   - UI
     - improve appearance
-    - side bar?
   - GIF
-  test
    */
 }
