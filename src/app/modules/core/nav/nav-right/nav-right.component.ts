@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { slideInOutMenu } from 'src/app/helper/animations';
 
 @Component({
@@ -14,39 +14,46 @@ export class NavRightComponent implements OnInit {
   @Output() languageToggled = new EventEmitter();
   @Output() settingsToggled = new EventEmitter();
   @Output() clusteringToggled = new EventEmitter();
+  @Output() hideOutliersToggled = new EventEmitter();
 
   @Input() theme;
   @Input() language;
   @Input() settings;
   @Input() user;
   @Input() clustering;
+  @Input() hideOutliers;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
   }
 
-  toggleTheme(them){
-    if(them === "light") {
+  toggleTheme(them) {
+    if (them === 'light'){
       this.themeToggled.emit('dark');
     } else {
       this.themeToggled.emit('light');
     }
   }
 
-  toggleLanguage(lang){
-    if(lang === "de-DE") {
+  toggleLanguage(lang) {
+    if (lang === 'de-DE'){
       this.languageToggled.emit('en-US');
     } else {
       this.languageToggled.emit('de-DE');
     }
   }
 
-  toggleSettings(){
+  toggleSettings() {
     this.settingsToggled.emit();
   }
 
-  toggleClustering(){
+  toggleClustering() {
     this.clusteringToggled.emit();
+  }
+
+  toggleHideOutliers() {
+    this.hideOutliersToggled.emit();
   }
 }

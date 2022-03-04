@@ -39,7 +39,7 @@ export class TimeSliderContainerComponent implements OnInit {
   intervalPlaying = false;
 
   constructor(
-    private uiQuery: UiQuery, 
+    private uiQuery: UiQuery,
     private uiService: UiService,
     private boxQuery: BoxQuery,
     private boxService: BoxService,
@@ -48,7 +48,7 @@ export class TimeSliderContainerComponent implements OnInit {
     private mapService: MapService
     ) { }
 
-  ngOnInit() { 
+  ngOnInit() {
     this.combineSub = this.selectedDate$.pipe(withLatestFrom(this.selectedPheno$, this.clustering$)).subscribe(res => {
         if(res[0]){
           this.selectedDate = res[0].getTime();
@@ -56,7 +56,7 @@ export class TimeSliderContainerComponent implements OnInit {
         }
         if(res[1])
           this.selectedPheno = res[1];
-        
+
         if(res[0] && res[1]){
           let newLayer = JSON.parse(JSON.stringify(res[1].layer));
           newLayer.filter = ["!=", null, [ "get", res[0].toISOString(), ["object", ["get", res[1].title, ["object", ["get", "values"]]]]]];
@@ -64,12 +64,14 @@ export class TimeSliderContainerComponent implements OnInit {
           this.uiService.updateBaseLayer(newLayer);
         } else if(res[1] && !res[0] && this.selectedDate) {
           let newLayer = JSON.parse(JSON.stringify(res[1].layer));
-          newLayer.filter = [ "get", res[1].title, ["object", ["get", "live", ["object", ["get", "sensors"]]]]];
-          newLayer.paint['circle-color'][2] = [ "get", res[1].title, ["object", ["get", "live", ["object", ["get", "sensors"]]]]];
+          // newLayer.filter = [ "get", res[1].title, ["object", ["get", "live", ["object", ["get", "sensors"]]]]];
+          newLayer.filter = [ "get", "value", ["object", ["get", res[1].title, ["object", ["get", "live", ["object", ["get", "sensors"]]]]]]];
+          // newLayer.paint['circle-color'][2] = [ "get", res[1].title, ["object", ["get", "live", ["object", ["get", "sensors"]]]]];
+          newLayer.paint['circle-color'][2] = [ "get", "value", ["object", ["get", res[1].title, ["object", ["get", "live", ["object", ["get", "sensors"]]]]]]];
           console.log(newLayer);
           this.uiService.updateBaseLayer(newLayer);
           // this.uiService.setClustering(true);  TODO: what was this needed for?
-        }          
+        }
     })
 
 
@@ -98,7 +100,7 @@ export class TimeSliderContainerComponent implements OnInit {
     this.uiService.updateActiveTimeMode('live');
     // this.mapService.reactivateBaseLayer();
     this.router.navigate(
-      [], 
+      [],
       {
         relativeTo: this.activatedRoute,
         queryParams: newQueryParams

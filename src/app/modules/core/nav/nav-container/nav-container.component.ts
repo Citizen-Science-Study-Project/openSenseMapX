@@ -12,12 +12,13 @@ import { UiQuery } from 'src/app/models/ui/state/ui.query';
 })
 export class NavContainerComponent implements OnInit {
 
-  settings:Boolean = false;
+  settings: Boolean = false;
 
   language$ = this.uiQuery.selectLanguage$;
   theme$ = this.uiQuery.selectTheme$;
   user$ = this.sessionQuery.user$;
   clustering$ = this.uiQuery.selectClustering$;
+  hideOutliers$ = this.uiQuery.selectHideOutliers$;
 
   constructor(
     private themeService: ThemeService,
@@ -25,23 +26,31 @@ export class NavContainerComponent implements OnInit {
     private uiService: UiService,
     private uiQuery: UiQuery,
     private sessionQuery: SessionQuery,
-    ) { }
+  ) {
+  }
 
   ngOnInit() {
   }
 
-  toggleTheme(theme){
+  toggleTheme(theme) {
     this.uiService.setTheme(theme);
     // this.themeService.toggleTheme();
   }
-  setLanguage(lang){
+
+  setLanguage(lang) {
     this.uiService.setLanguage(lang);
   }
-  toggleSettings(){
+
+  toggleSettings() {
     this.settings = !this.settings;
   }
-  toggleClustering(){
+
+  toggleClustering() {
     this.uiService.toggleClustering();
+  }
+
+  toggleHideOutliers() {
+    this.uiService.toggleHideOutliers();
   }
 
 }

@@ -1,33 +1,34 @@
 <div id="map-options" [@growVertHorz]="visible" class="osem-padding-small">
-    <div class="toggle-button" [class.active]="visible"  (click)="toggleMapOptions()">
-        <div *ngIf="visible" class="osem-minimize-button" title="{{'MAP_OPTIONS' | translate}}">-</div>
-        <div class="map-button" *ngIf="!visible"  title="{{'MAP_OPTIONS' | translate}}">
-            <i class="fa fa-map-o"></i>
-        </div>
+  <div class="toggle-button" [class.active]="visible" (click)="toggleMapOptions()">
+    <div *ngIf="visible" class="osem-minimize-button" title="{{'MAP_OPTIONS' | translate}}">-</div>
+    <div class="map-button" *ngIf="!visible" title="{{'MAP_OPTIONS' | translate}}">
+      <i class="fa fa-map-o"></i>
+    </div>
+  </div>
+
+  <div *ngIf="visible" class="options" [@appear]="visible">
+    <div class="checkbox-container mouse-active" (click)="toggleClustering()"
+         title="{{'TOGGLE_CLUSTERING' | translate}}">
+      <div class="checkbox">
+        <i *ngIf="!clustering" class="fa fa-square-o"></i>
+        <i *ngIf="clustering" class="fa fa-check-square-o checked"></i>
+      </div>
+      <span>{{'CLUSTERING' | translate}}</span>
+    </div>
+    <div class="checkbox-container osem-disabled" title="{{'TOGGLE_NUMBERS' | translate}}">
+      <div class="checkbox">
+        <i *ngIf="!numbers" class="fa fa-square-o not-checked"></i>
+        <i *ngIf="numbers" class="fa fa-check-square-o checked"></i>
+      </div>
+      <span>{{'NUMBERS' | translate}}</span>
+    </div>
+    <div class="checkbox-container osem-disabled" title="{{'TOGGLE_NUMBERS' | translate}}">
+      <div class="checkbox">
+        <i *ngIf="!circles" class="fa fa-square-o not-checked"></i>
+        <i *ngIf="circles" class="fa fa-check-square-o checked"></i>
+      </div>
+      <span>{{'CIRCLES' | translate}}</span>
     </div>
 
-    <div *ngIf="visible" class="options" [@appear]="visible">
-        <div class="checkbox-container mouse-active" (click)="toggleClustering()" title="{{'TOGGLE_CLUSTERING' | translate}}">
-            <div class="checkbox">
-                <i *ngIf="!clustering" class="fa fa-square-o"></i>
-                <i *ngIf="clustering" class="fa fa-check-square-o checked"></i>
-            </div>
-            <span>{{'CLUSTERING' | translate}}</span>
-        </div>
-        <div class="checkbox-container osem-disabled" title="{{'TOGGLE_NUMBERS' | translate}}">
-            <div class="checkbox">
-                <i *ngIf="!numbers" class="fa fa-square-o not-checked"></i>
-                <i *ngIf="numbers" class="fa fa-check-square-o checked"></i>
-            </div>
-            <span>{{'NUMBERS' | translate}}</span>
-        </div>
-        <div class="checkbox-container osem-disabled" title="{{'TOGGLE_NUMBERS' | translate}}">
-            <div class="checkbox">
-                <i *ngIf="!circles" class="fa fa-square-o not-checked"></i>
-                <i *ngIf="circles" class="fa fa-check-square-o checked"></i>
-            </div>
-            <span>{{'CIRCLES' | translate}}</span>
-        </div>
-
-    </div>
+  </div>
 </div>

@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { growVertHorz, slideInOutHorizontal, appear } from 'src/app/helper/animations';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { appear, growVertHorz, slideInOutHorizontal } from 'src/app/helper/animations';
 
 @Component({
   selector: 'osem-map-options',

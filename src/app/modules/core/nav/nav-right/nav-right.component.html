@@ -1,59 +1,72 @@
 <div class="nav-right-container">
-    <div class="logo" [routerLink]="['']">
-       <img src="/assets/img/logos/osem.svg"> <span>openSenseMap</span>
-       <div id="beta-text" [title]="'BETA_TEXT' | translate">
-           BETA
-       </div>
+  <div class="logo" [routerLink]="['']">
+    <img src="/assets/img/logos/osem.svg"> <span>openSenseMap</span>
+    <div id="beta-text" [title]="'BETA_TEXT' | translate">
+      BETA
     </div>
-    <div class="nav-item-container osem-box-shadow-basic">
-        <div *ngIf="!user" class="nav-item osem-disabled" [routerLink]="[{ outlets: { sidebar: ['login'] }}]" queryParamsHandling="merge">
-            Login
-        </div>
-        <div *ngIf="user" class="nav-item" [routerLink]="[{ outlets: { sidebar: ['m','profile'] }}]" queryParamsHandling="merge">
-            {{user.name}}
-        </div>
-        <div class="nav-item" (click)="toggleSettings()">
-            <i class="fa fa-cogs"></i>
-        </div>
-        <div class="nav-item" [routerLink]="[{ outlets: { sidebar: ['m'] }}]">
-            <i class="fa fa-bars"></i>
-        </div>
+  </div>
+  <div class="nav-item-container osem-box-shadow-basic">
+    <div *ngIf="!user" class="nav-item osem-disabled" [routerLink]="[{ outlets: { sidebar: ['login'] }}]"
+         queryParamsHandling="merge">
+      Login
     </div>
+    <div *ngIf="user" class="nav-item" [routerLink]="[{ outlets: { sidebar: ['m','profile'] }}]"
+         queryParamsHandling="merge">
+      {{user.name}}
+    </div>
+    <div class="nav-item" (click)="toggleSettings()">
+      <i class="fa fa-cogs"></i>
+    </div>
+    <div class="nav-item" [routerLink]="[{ outlets: { sidebar: ['m'] }}]">
+      <i class="fa fa-bars"></i>
+    </div>
+  </div>
 </div>
 
 
 <div id="settings" class="osem-box-shadow-basic" *ngIf="settings" [@slideInOutMenu]>
-    
-    <h2 class="underline pt-3">{{'PAGE_SETTINGS' | translate}}</h2>
-    <div class="option-container pt-4">
-        <div class="option-inner">
-            <span class="option-name">{{'THEME' | translate}}:</span>
-            <div class="options" (click)="toggleTheme(theme)">
-                <div class="inner">
-                    <span [class.active]="theme === 'light'">light</span> /
-                    <span [class.active]="theme === 'dark'">dark</span>
-                </div>
-            </div>
+
+  <h2 class="underline pt-3">{{'PAGE_SETTINGS' | translate}}</h2>
+  <div class="option-container pt-4">
+    <div class="option-inner">
+      <span class="option-name">{{'THEME' | translate}}:</span>
+      <div class="options" (click)="toggleTheme(theme)">
+        <div class="inner">
+          <span [class.active]="theme === 'light'">light</span> /
+          <span [class.active]="theme === 'dark'">dark</span>
         </div>
-        <div class="option-inner pt-2">
-            <span class="option-name">{{'LANGUAGE' | translate}}:</span>
-            <div class="options" (click)="toggleLanguage(language)">
-                <div class="inner">
-                    <span [class.active]="language === 'en-US'">en</span> /
-                    <span [class.active]="language === 'de-DE'">de</span>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
-    <h2 class="pt-5 underline">{{'MAP_SETTINGS' | translate}}</h2>
-    <div class="option-container">
-        <div class="checkbox-container mouse-active py-4" (click)="toggleClustering()" title="{{'TOGGLE_CLUSTERING' | translate}}">
-            <div class="checkbox">
-                <i *ngIf="!clustering" class="fa fa-square"></i>
-                <i *ngIf="clustering" class="fa fa-check-square"></i>
-            </div>
-            <span>{{'CLUSTERING' | translate}}</span>
+    <div class="option-inner pt-2">
+      <span class="option-name">{{'LANGUAGE' | translate}}:</span>
+      <div class="options" (click)="toggleLanguage(language)">
+        <div class="inner">
+          <span [class.active]="language === 'en-US'">en</span> /
+          <span [class.active]="language === 'de-DE'">de</span>
         </div>
+      </div>
     </div>
+  </div>
+  <h2 class="pt-5 underline">{{'MAP_SETTINGS' | translate}}</h2>
+  <div class="option-container">
+    <div class="checkbox-container mouse-active py-4" (click)="toggleClustering()"
+         title="{{'TOGGLE_CLUSTERING' | translate}}">
+      <div class="checkbox">
+        <i *ngIf="!clustering" class="fa fa-square"></i>
+        <i *ngIf="clustering" class="fa fa-check-square"></i>
+      </div>
+      <span>{{'CLUSTERING' | translate}}</span>
+    </div>
+  </div>
+  <div class="option-container">
+    <div class="checkbox-container mouse-active py-4" (click)="toggleHideOutliers()"
+         title="{{'TOGGLE_HIDE_OUTLIERS' | translate}}">
+      <div class="checkbox">
+        <i *ngIf="!hideOutliers" class="fa fa-square"></i>
+        <i *ngIf="hideOutliers" class="fa fa-check-square"></i>
+      </div>
+      <span>{{'HIDE_OUTLIERS' | translate}}</span>
+    </div>
+  </div>
 
 </div>

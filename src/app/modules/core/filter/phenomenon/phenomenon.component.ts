@@ -1,7 +1,5 @@
-import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { bindCallback } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { UiQuery } from 'src/app/models/ui/state/ui.query';
 import { UiService } from 'src/app/models/ui/state/ui.service';
 
@@ -12,7 +10,7 @@ import { UiService } from 'src/app/models/ui/state/ui.service';
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PhenomenonComponent implements OnInit {
- 
+
   @Input() selectedPheno;
   @Input() changeVariable: boolean = false;
   @Input() stats;
@@ -36,13 +34,13 @@ export class PhenomenonComponent implements OnInit {
           'circle-opacity': 0.7,
           'circle-radius': {
             'base': 1.75,
-            'stops': [[1,4], [22, 200]]
+            'stops': [[1, 4], [22, 200]]
           },
-          'circle-color':  ["case", [">=", 
-          ["to-string", ["get", "lastMeasurementAt"]],
-          ["to-string", "2020-03-27"]
-          ], "#4EAF47", "#999"]
-      
+          'circle-color': ['case', ['>=',
+            ['to-string', ['get', 'lastMeasurementAt']],
+            ['to-string', '2020-03-27']
+          ], '#4EAF47', '#999']
+
           // 'circle-color': ['interpolate',
           // ['linear'],
           // ['get', 'lastMeasurementAt'],
@@ -61,7 +59,7 @@ export class PhenomenonComponent implements OnInit {
           // ]
         }
       },
-      icon: "osem-thermometer",
+      icon: 'osem-thermometer',
     },
     {
       title: 'Temperatur',
@@ -70,17 +68,19 @@ export class PhenomenonComponent implements OnInit {
         'id': 'base-layer',
         'type': 'circle',
         'source': 'boxes',
-        'filter': ["!=", null, [ "get", "Temperatur", ["object", ["get", "live", ["object", ["get", "sensors"]]]]]],
+        // 'filter': ["!=", null, [ "get", "Temperatur", ["object", ["get", "live", ["object", ["get", "sensors"]]]]]],
+        'filter': ['!=', null, ['get', 'value', ['object', ['get', 'Temperatur', ['object', ['get', 'live', ['object', ['get', 'sensors']]]]]]]],
         'paint': {
           'circle-opacity': 0.7,
           'circle-radius': {
             'base': 1.75,
-            'stops': [[1,4], [22, 200]]
+            'stops': [[1, 4], [22, 200]]
           },
           'circle-color': [
             'interpolate',
             ['linear'],
-            [ "get", "Temperatur", ["object", ["get", "live", ["object", ["get", "sensors"]]]]],
+            // [ "get", "Temperatur", ["object", ["get", "live", ["object", ["get", "sensors"]]]]],
+            ['get', 'value', ['object', ['get', 'Temperatur', ['object', ['get', 'live', ['object', ['get', 'sensors']]]]]]],
             -5, '#9900cc',
             0, '#0000ff',
             10, '#0099ff',
@@ -89,108 +89,117 @@ export class PhenomenonComponent implements OnInit {
           ]
         }
       },
-      icon: "osem-thermometer",
+      icon: 'osem-thermometer',
     }, {
       title: 'rel. Luftfeuchte',
       unit: '%',
-      layer : { 
+      layer: {
         'id': 'base-layer',
         'type': 'circle',
         'source': 'boxes',
-        'filter': ["!=", null, [ "get", "rel. Luftfeuchte", ["object", ["get", "live", ["object", ["get", "sensors"]]]]]],
+        // 'filter': ["!=", null, [ "get", "rel. Luftfeuchte", ["object", ["get", "live", ["object", ["get", "sensors"]]]]]],
+        'filter': ['!=', null, ['get', 'value', ['object', ['get', 'rel. Luftfeuchte', ['object', ['get', 'live', ['object', ['get', 'sensors']]]]]]]],
         'paint': {
           'circle-opacity': 0.7,
           'circle-radius': {
             'base': 1.75,
-            'stops': [[1,4], [22, 200]]
+            'stops': [[1, 4], [22, 200]]
           },
           'circle-color': [
             'interpolate',
             ['linear'],
-            [ "get", "rel. Luftfeuchte", ["object", ["get", "live", ["object", ["get", "sensors"]]]]],
+            // [ "get", "rel. Luftfeuchte", ["object", ["get", "live", ["object", ["get", "sensors"]]]]],
+            ['get', 'value', ['object', ['get', 'rel. Luftfeuchte', ['object', ['get', 'live', ['object', ['get', 'sensors']]]]]]],
             0, '#9900cc',
             25, '#0000ff',
             50, '#0099ff',
             75, '#ffff00',
             100, '#ff0000',
           ]
-        } 
+        }
       },
-      icon: "osem-humidity"
+      icon: 'osem-humidity'
     },
     {
       title: 'Luftdruck',
       unit: 'hPa',
-      layer : { 
+      layer: {
         'id': 'base-layer',
         'type': 'circle',
         'source': 'boxes',
-        'filter': ["!=", null, [ "get", "Luftdruck", ["object", ["get", "live", ["object", ["get", "sensors"]]]]]],
+        // 'filter': ["!=", null, [ "get", "Luftdruck", ["object", ["get", "live", ["object", ["get", "sensors"]]]]]],
+        'filter': ['!=', null, ['get', 'value', ['object', ['get', 'Luftdruck', ['object', ['get', 'live', ['object', ['get', 'sensors']]]]]]]],
         'paint': {
           'circle-opacity': 0.7,
           'circle-radius': {
             'base': 1.75,
-            'stops': [[1,4], [22, 200]]
+            'stops': [[1, 4], [22, 200]]
           },
           'circle-color': [
             'interpolate',
             ['linear'],
-            [ "get", "Luftdruck", ["object", ["get", "live", ["object", ["get", "sensors"]]]]],
+            // [ "get", "Luftdruck", ["object", ["get", "live", ["object", ["get", "sensors"]]]]],
+            ['get', 'value', ['object', ['get', 'Luftdruck', ['object', ['get', 'live', ['object', ['get', 'sensors']]]]]]],
             0, '#9900cc',
             25, '#0000ff',
             50, '#0099ff',
             75, '#ffff00',
             100, '#ff0000',
           ]
-        } 
+        }
       },
-      icon: "osem-barometer"
+      icon: 'osem-barometer'
     },
-    { title: 'Beleuchtungsstärke', 
+    {
+      title: 'Beleuchtungsstärke',
       unit: 'lux',
       layer: {
         'id': 'base-layer',
         'type': 'circle',
         'source': 'boxes',
-        'filter': ["!=", null, [ "get", "Beleuchtungsstärke", ["object", ["get", "live", ["object", ["get", "sensors"]]]]]],
+        // 'filter': ["!=", null, [ "get", "Beleuchtungsstärke", ["object", ["get", "live", ["object", ["get", "sensors"]]]]]],
+        'filter': ['!=', null, ['get', 'value', ['object', ['get', 'Beleuchtungsstärke', ['object', ['get', 'live', ['object', ['get', 'sensors']]]]]]]],
         'paint': {
           'circle-opacity': 0.7,
           'circle-radius': {
             'base': 1.75,
-            'stops': [[1,4], [22, 200]]
+            'stops': [[1, 4], [22, 200]]
           },
           'circle-color': [
             'interpolate',
             ['linear'],
-          [ "get", "Beleuchtungsstärke", ["object", ["get", "live", ["object", ["get", "sensors"]]]]],
-          0, '#9900cc',
-          1000, '#0000ff',
-          2000, '#0099ff',
-          3000, '#ffff00',
-          4000, '#ff0000',
-        ]
-      }
+            // [ "get", "Beleuchtungsstärke", ["object", ["get", "live", ["object", ["get", "sensors"]]]]],
+            ['get', 'value', ['object', ['get', 'Beleuchtungsstärke', ['object', ['get', 'live', ['object', ['get', 'sensors']]]]]]],
+            0, '#9900cc',
+            1000, '#0000ff',
+            2000, '#0099ff',
+            3000, '#ffff00',
+            4000, '#ff0000',
+          ]
+        }
       },
-      icon: "osem-brightness"
+      icon: 'osem-brightness'
     },
-    { 
-      title: 'UV-Intensität', 
+    {
+      title: 'UV-Intensität',
       unit: 'μW/cm²',
       layer: {
         'id': 'base-layer',
         'type': 'circle',
         'source': 'boxes',
-        'filter': ["!=", null, [ "get", "UV-Intensität", ["object", ["get", "live", ["object", ["get", "sensors"]]]]]],
+        // 'filter': ["!=", null, [ "get", "UV-Intensität", ["object", ["get", "live", ["object", ["get", "sensors"]]]]]],
+        'filter': ['!=', null, ['get', 'value', ['object', ['get', 'UV-Intensität', ['object', ['get', 'live', ['object', ['get', 'sensors']]]]]]]],
         'paint': {
           'circle-opacity': 0.7,
           'circle-radius': {
             'base': 1.75,
-            'stops': [[1,4], [22, 200]]
+            'stops': [[1, 4], [22, 200]]
           },
           'circle-color': [
             'interpolate',
             ['linear'],
-            [ "get", "UV-Intensität", ["object", ["get", "live", ["object", ["get", "sensors"]]]]],
+            // [ "get", "UV-Intensität", ["object", ["get", "live", ["object", ["get", "sensors"]]]]],
+            ['get', 'value', ['object', ['get', 'UV-Intensität', ['object', ['get', 'live', ['object', ['get', 'sensors']]]]]]],
             0, '#9900cc',
             100, '#0000ff',
             200, '#0099ff',
@@ -199,25 +208,28 @@ export class PhenomenonComponent implements OnInit {
           ]
         }
       },
-      icon: "osem-brightness"
+      icon: 'osem-brightness'
     },
-    { title: "PM10",
+    {
+      title: 'PM10',
       unit: 'µg/m³',
       layer: {
         'id': 'base-layer',
         'type': 'circle',
         'source': 'boxes',
-        'filter': ["!=", null, [ "get", "PM10", ["object", ["get", "live", ["object", ["get", "sensors"]]]]]],
+        // 'filter': ["!=", null, [ "get", "PM10", ["object", ["get", "live", ["object", ["get", "sensors"]]]]]],
+        'filter': ['!=', null, ['get', 'value', ['object', ['get', 'PM10', ['object', ['get', 'live', ['object', ['get', 'sensors']]]]]]]],
         'paint': {
           'circle-opacity': 0.7,
           'circle-radius': {
             'base': 1.75,
-            'stops': [[1,4], [22, 200]]
+            'stops': [[1, 4], [22, 200]]
           },
           'circle-color': [
             'interpolate',
             ['linear'],
-            [ "get", "PM10", ["object", ["get", "live", ["object", ["get", "sensors"]]]]],
+            // [ "get", "PM10", ["object", ["get", "live", ["object", ["get", "sensors"]]]]],
+            ['get', 'value', ['object', ['get', 'PM10', ['object', ['get', 'live', ['object', ['get', 'sensors']]]]]]],
             0, '#9900cc',
             15, '#0000ff',
             30, '#0099ff',
@@ -226,26 +238,28 @@ export class PhenomenonComponent implements OnInit {
           ]
         }
       },
-      icon: "osem-cloud"
+      icon: 'osem-cloud'
     },
-    { 
-      title: "PM2.5", 
+    {
+      title: 'PM2.5',
       unit: 'µg/m³',
       layer: {
         'id': 'base-layer',
         'type': 'circle',
         'source': 'boxes',
-        'filter': ["!=", null, [ "get", "PM2.5", ["object", ["get", "live", ["object", ["get", "sensors"]]]]]],
+        // 'filter': ["!=", null, [ "get", "PM2.5", ["object", ["get", "live", ["object", ["get", "sensors"]]]]]],
+        'filter': ['!=', null, ['get', 'value', ['object', ['get', 'PM2.5', ['object', ['get', 'live', ['object', ['get', 'sensors']]]]]]]],
         'paint': {
           'circle-opacity': 0.7,
           'circle-radius': {
             'base': 1.75,
-            'stops': [[1,4], [22, 200]]
+            'stops': [[1, 4], [22, 200]]
           },
           'circle-color': [
             'interpolate',
             ['linear'],
-            [ "get", "PM2.5", ["object", ["get", "live", ["object", ["get", "sensors"]]]]],
+            // [ "get", "PM2.5", ["object", ["get", "live", ["object", ["get", "sensors"]]]]],
+            ['get', 'value', ['object', ['get', 'PM2.5', ['object', ['get', 'live', ['object', ['get', 'sensors']]]]]]],
             0, '#9900cc',
             10, '#0000ff',
             20, '#0099ff',
@@ -254,76 +268,77 @@ export class PhenomenonComponent implements OnInit {
           ]
         }
       },
-      icon: "osem-cloud"
+      icon: 'osem-cloud'
     }
-  ]
+  ];
 
-  constructor(private activatedRoute: ActivatedRoute, private router: Router, private uiService: UiService, private uiQuery: UiQuery) { }
+  constructor(private activatedRoute: ActivatedRoute, private router: Router, private uiService: UiService, private uiQuery: UiQuery) {
+  }
 
   ngOnInit() {
 
     this.activatedRoute.queryParams.subscribe(params => {
       //if no pheno in URL open ALL layer
-      if(!params.mapPheno){
-        this.phenoSelected.emit(this.phenos.find(pheno => pheno.title === 'ALL'))
+      if (!params.mapPheno){
+        this.phenoSelected.emit(this.phenos.find(pheno => pheno.title === 'ALL'));
         this.oldClustering = this.uiQuery.getValue().clustering;
         this.uiService.setClustering(false);
         this.uiService.setNumbers(false);
       }
-      if(params.mapPheno){
-        if(!this.selectedPheno || this.selectedPheno.title != params.mapPheno)
+      if (params.mapPheno){
+        if (!this.selectedPheno || this.selectedPheno.title != params.mapPheno)
           this.phenoSelected.emit(this.phenos.find(pheno => pheno.title === params.mapPheno));
 
-        if(params.mapPheno === 'ALL'){
+        if (params.mapPheno === 'ALL'){
           this.oldClustering = this.uiQuery.getValue().clustering;
           this.uiService.setClustering(false);
           this.uiService.setNumbers(false);
         } else {
-          if(!this.uiQuery.getValue().clustering){
+          if (!this.uiQuery.getValue().clustering){
             this.uiService.setNumbers(true);
           }
         }
-        
-        if(this.selectedPheno && this.selectedPheno.title === 'ALL'){
+
+        if (this.selectedPheno && this.selectedPheno.title === 'ALL'){
           this.uiService.setClustering(this.oldClustering);
-          if(this.oldClustering){
+          if (this.oldClustering){
             this.uiService.setNumbers(false);
           }
         }
       }
-    })
+    });
   }
 
-  selectPheno(pheno){
+  selectPheno(pheno) {
     this.router.navigate(
-      [], 
+      [],
       {
         relativeTo: this.activatedRoute,
-        queryParams: { mapPheno: pheno.title },
+        queryParams: {mapPheno: pheno.title},
         queryParamsHandling: 'merge'
       });
   }
 
-  toggleChange(){
+  toggleChange() {
     this.changeToggled.emit();
     // this.changeVariable = !this.changeVariable;
     // console.log(this.changeVariable)
   }
 
-  showInfo(pheno){
+  showInfo(pheno) {
     this.infoPhenoSelected.emit(pheno);
   }
 
-  openVis(pheno){
+  openVis(pheno) {
     this.router.navigate(
       [{outlets: {modal: 'vis'}}],
       {
         relativeTo: this.activatedRoute,
         queryParamsHandling: 'merge'
       }
-    ); 
+    );
   }
-  
+
   editLegend() {
     this.router.navigate(
       [{outlets: {modal: 'edit-legend'}}],
@@ -331,6 +346,6 @@ export class PhenomenonComponent implements OnInit {
         relativeTo: this.activatedRoute,
         queryParamsHandling: 'merge'
       }
-    ); 
+    );
   }
 }

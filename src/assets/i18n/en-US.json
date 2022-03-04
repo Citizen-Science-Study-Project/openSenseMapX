@@ -76,6 +76,7 @@
     "MY_ACCOUNT": "My account",
 
     "CLUSTERING": "Clustering",
+    "HIDE_OUTLIERS":"Hide Outliers",
 
     "COMPARE_MODUS_HEADER": "Compare-Mode",
     "COMPARE_MODUS_HELP": "Click on a marker to compare.",
