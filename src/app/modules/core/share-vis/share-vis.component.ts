@@ -6,7 +6,8 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'osem-share-vis',
   templateUrl: './share-vis.component.html',
-  styleUrls: ['./share-vis.component.scss']
+  styleUrls: ['./share-vis.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShareVisComponent implements OnInit {
 
@@ -20,9 +21,6 @@ export class ShareVisComponent implements OnInit {
 
   constructor(private activatedRoute: ActivatedRoute, private uiQuery: UiQuery, private mapService: MapService) {
   }
-  styleUrls: ['./share-vis.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
-  @Output() visShared = new EventEmitter();
 
   ngOnInit() {
   }
