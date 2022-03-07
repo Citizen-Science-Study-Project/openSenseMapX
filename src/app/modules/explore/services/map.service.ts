@@ -16,11 +16,6 @@ import { BoxQuery } from 'src/app/models/box/state/box.query';
 import { withLatestFrom } from 'rxjs/operators';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 
-import * as saveAs from 'file-saver';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
-import * as $ from 'jquery';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -126,11 +121,11 @@ export class MapService {
 
     // subscribes to the Pheno, Filter and Date selection to update the sources accordingly, subscribes to Layers once sources are done
     this.dataSub = combineLatest(this.selectedPheno$, this.filters$, this.dateRangeData$, this.hideOutliers$).subscribe(res => {
-      if (res[0]){
+      if (res[0]) {
         let hideOutliersData, filteredData;
 
         // Update Filters and Outliers
-        if (res[0].title === 'ALL'){
+        if (res[0].title === 'ALL') {
           hideOutliersData = this.outlierData(this.worldData.getValue(), false, false);
           filteredData = this.filterData(hideOutliersData, false, res[1]);
         } else {
@@ -221,8 +216,8 @@ export class MapService {
 
     this.compareModusSub = this.compareModus$.pipe(withLatestFrom(this.compareTo$)).subscribe(res => {
       this.compareModus = res[0];
-      if (this.map && this.map.getLayer('base-layer')){
-        if (res[0]){
+      if (this.map && this.map.getLayer('base-layer')) {
+        if (res[0]) {
           this.map.off('mouseenter', 'base-layer', this.baseMouseenterFunction);
           this.map.off('click', 'base-layer', this.baseClickFunction);
           this.map.on('mouseenter', 'base-layer', this.compareMouseenterFunction);
@@ -244,7 +239,7 @@ export class MapService {
           this.map.on('click', 'boxes-no-cluster', this.baseClickFunction);
         }
 
-        if (res[1].length > 0){
+        if (res[1].length > 0) {
           this.map.setFilter('active-layer', ['match', ['get', '_id'], res[1], true, false]);
         }
       }
@@ -293,7 +288,7 @@ export class MapService {
     if (!this.map.getLayer(layer.id)) {
       this.map.addLayer(layer);
 
-      if (this.map.getLayer('active-layer-text')){
+      if (this.map.getLayer('active-layer-text')) {
         this.map.moveLayer(layer.id, 'active-layer-text');
       }
 
@@ -301,13 +296,13 @@ export class MapService {
 
       this.map.setPaintProperty(layer.id, 'circle-color', layer.paint['circle-color']);
 
-      if (layer.filter){
+      if (layer.filter) {
         this.map.setFilter(layer.id, layer.filter);
       } else {
         this.map.setFilter(layer.id);
       }
     }
-    if (!this.map.getLayer('number-layer')){
+    if (!this.map.getLayer('number-layer')) {
       this.addNumberLayer();
       this.addPopup('base-layer');
     }
@@ -389,7 +384,7 @@ export class MapService {
           'filter': ['==', id, ['get', '_id']],
           'paint': paint,
           'layout': {
-            'text-field': ['format', ['get', 'name'], {'font-scale': 1.2}],
+            'text-field': ['format', ['get', 'name'], { 'font-scale': 1.2 }],
             'text-variable-anchor': ['top'],
             'text-offset': {
               'stops': [
@@ -434,9 +429,9 @@ export class MapService {
   }
 
   updateActiveLayerCompare(data, theme) {
-    if (data.length > 0){
+    if (data.length > 0) {
       let paint;
-      if (theme === 'dark'){
+      if (theme === 'dark') {
         paint = {
           'text-color': '#f6f6f6',
           'text-halo-blur': 4,
@@ -451,7 +446,7 @@ export class MapService {
           'text-halo-width': 1
         };
       }
-      if (!this.map.getLayer('active-layer')){
+      if (!this.map.getLayer('active-layer')) {
         this.map.addLayer({
           'id': 'active-layer-text',
           'type': 'symbol',
@@ -459,7 +454,7 @@ export class MapService {
           'filter': ['match', ['get', '_id'], data, true, false],
           'paint': paint,
           'layout': {
-            'text-field': ['format', ['get', 'name'], {'font-scale': 1.2}],
+            'text-field': ['format', ['get', 'name'], { 'font-scale': 1.2 }],
             'text-variable-anchor': ['top'],
             'text-offset': {
               'stops': [
@@ -769,11 +764,11 @@ export class MapService {
 
   compareClickFunction = e => {
 
-    if (e.features.length > 0){
+    if (e.features.length > 0) {
       var coordinates = e.features[0].geometry.coordinates.slice();
 
       let box = e.features[0].properties;
-      if (e.features[0].properties.sensors){
+      if (e.features[0].properties.sensors) {
         this.boxService.setPopupBox({ ...box, sensors: JSON.parse(e.features[0].properties.sensors) });
       } else {
         this.boxService.setPopupBox({ ...box, sensors: [] });
@@ -827,7 +822,7 @@ export class MapService {
     let that = this;
     this.map.on('mouseenter', layer,
       function (e) {
-        that.activatePopupTimer = setTimeout(function() {
+        that.activatePopupTimer = setTimeout(function () {
           that.baseMouseenterFunction(e);
         }, 100);
       }
@@ -883,16 +878,16 @@ export class MapService {
 
   outlierData(data, property, hideOutliers) {
     const hideOutliersData = data['features'].filter(res => {
-      if (property && hideOutliers){
+      if (property && hideOutliers) {
         if (res['properties']['sensors']['live'] && res['properties']['sensors']['live'][property]
-          && res['properties']['sensors']['live'][property]['is_outlier'] === false){
+          && res['properties']['sensors']['live'][property]['is_outlier'] === false) {
           return res;
         }
       } else {
         return res;
       }
     });
-    return {type: 'FeatureCollection', features: hideOutliersData};
+    return { type: 'FeatureCollection', features: hideOutliersData };
   }
 
   // THEMING
@@ -1039,73 +1034,7 @@ export class MapService {
   //   console.log(features)
   // }
 
-  printMap(format) {
-    let renderMap = this.map; //make a copy of the map
-    let mapContainer = $('#map'); //get the map's container
-    let mapLegend = $('#legend').clone(true); //clone the map legend
-
-    if ($('.stats-headline').length != 0) {
-      mapLegend.children().children().children().children().children().last().remove(); //remove the statistics part from the legend
-    } else {
-      //Fix legend gradient bar
-      let gradient = mapLegend.children().children().children().children().last();
-      gradient.css('height', '100%');
-      gradient.css('margin', '0');
-    }
-
-    let improveMapText = $('.mapbox-improve-map').first().text(); //save the improve map text
-
-    hideMapElements(); //Hide elements from the map that should not be printed
-
-    var legend = $('<div></div>'); //create a new div container for the legend
-    legend.addClass('map-overlay'); //add a new mapbox overlay
-    legend.append(mapLegend); //copy the existing legend to the new one
-    legend.css('position', 'absolute'); //legend position
-    legend.css('left', '0');
-    legend.css('top', '0');
-    legend.css('background', 'white'); //legend background color
-    legend.css('opacity', '0.7'); //legend background opacity
-
-    if ($('#legendSwitch:checked').length != 0) {
-      mapContainer.append(legend); //add legend to map
-    }
-    //once the map is fully rendered
-    renderMap.once('idle', () => {
-      //convert the html container into a canvas element
-      html2canvas(mapContainer[0]).then(function (canvas) {
-        //save image (PNG)
-        if (format == 'img') {
-          console.log("Printing image ...");
-          canvas.toBlob((blob) => {
-            saveAs(blob, 'vis.png');
-          });
-        }
-        //save PDF
-        if (format == 'pdf') {
-          console.log('Printing PDF...');
-          const contentDataURL = canvas.toDataURL('image/png');
-          let imgWidth = 297;
-          let imgHeight = canvas.height * imgWidth / canvas.width;
-          let pdf = new jsPDF('l', 'mm', 'a4');
-          let position = 0;
-          pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight)
-          pdf.save('vis.pdf');
-        }
-      });
-      restoreMap(); //restore the map defaults
-    });
-    renderMap.setZoom(renderMap.getZoom()); //Fix to trigger the map's idle event
-
-    function hideMapElements() {
-      $('.mapboxgl-ctrl-top-right').first().css('visibility', 'hidden'); //hide map controls
-      $('.mapbox-improve-map').first().text(''); //hide improve map text
-    }
-
-    function restoreMap() {
-      legend.remove(); //remove legend from the map
-      $('.mapboxgl-ctrl-top-right').first().css('visibility', 'visible'); //restore map controls
-      $('.mapbox-improve-map').first().text(improveMapText); //restore improve map text
-      renderMap.setZoom(renderMap.getZoom()); //Fix to print multiple times for the same view
-    }
+  getMap() {
+    return this.map;
   }
 }
