@@ -98,13 +98,13 @@
     "WEB_MAP": "WEB MAP",
     "STATIC_MAP": "STATIC MAP",
     "DYNAMIC_MAP": "DYNAMIC MAP",
-    "LEGEND_INCLUDE": "Do you want to include a legend?",
+    "LEGEND_INCLUDE": "Legend",
     "LEGEND_INCLUDE_YES": "Yes",
     "LEGEND_INCLUDE_NO": "No",
-    "EXPORT_FORMAT": "Which format do you want to share?",
+    "EXPORT_FORMAT": "Format",
     "EXPORT_FORMAT_IMAGE": "Image (PNG)",
     "EXPORT_FORMAT_DOCUMENT": "Document (PDF)",
-    "EXPORT": "EXPORT",
+    "EXPORT": "Export",
 
     "BETA_TEXT": "This site is still development!! Proceed with care ;).",
 

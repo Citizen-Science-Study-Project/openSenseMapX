@@ -98,13 +98,13 @@
     "WEB_MAP": "WEB-KARTE",
     "STATIC_MAP": "STATISCHE KARTE",
     "DYNAMIC_MAP": "DYNAMISCHE KARTE",
-    "LEGEND_INCLUDE": "Soll die Karte eine Legende beinhalten?",
+    "LEGEND_INCLUDE": "Legende",
     "LEGEND_INCLUDE_YES": "Ja",
     "LEGEND_INCLUDE_NO": "Nein",
-    "EXPORT_FORMAT": "In welchem Format soll die Karte geteilt werden?",
+    "EXPORT_FORMAT": "Format",
     "EXPORT_FORMAT_IMAGE": "Bild (PNG)",
     "EXPORT_FORMAT_DOCUMENT": "Dokument (PDF)",
-    "EXPORT": "EXPORTIEREN",
+    "EXPORT": "Exportieren",
 
 
     "BETA_TEXT": "Diese Seite ist noch in der Entwicklung!! Vorsicht ;).",
