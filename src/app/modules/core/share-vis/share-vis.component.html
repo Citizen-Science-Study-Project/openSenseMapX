@@ -1,65 +1,69 @@
-<div id="share-vis-window" class="osem-padding">
+<div class="osem-padding">
   <h1 class="title is-1">{{'SHARE_VIS' | translate}}</h1>
-  <div class="share-vis-box">
-    <div class="share-vis-elem">
+  <div class="share-vis-section">
+    <div class="share-vis-selection display-margin">
       <div class="share-vis-preview">
         <img src="/assets/img/test/share-preview-webmap.jpeg">
       </div>
       <button class="osem-button share-type-button" (click)="shareWebMap()">{{'WEB_MAP' | translate}}</button>
     </div>
-    <div class="share-vis-elem">
+    <div class="share-vis-selection display-margin">
       <div class="share-vis-preview">
         <img src="/assets/img/test/share-preview-pdf.jpeg">
       </div>
-      <button class="osem-button share-type-button" (click)="shareStaticMap()">{{'STATIC MAP' | translate}}</button>
+      <button class="osem-button share-type-button" (click)="shareStaticMap()">{{'STATIC_MAP' | translate}}</button>
     </div>
-    <div class="share-vis-elem">
+    <div class="share-vis-selection display-margin">
       <div class="share-vis-preview">
         <img src="/assets/img/test/share-preview-gif.jpeg">
       </div>
-      <button class="osem-button share-type-button" (click)="shareGIF()">{{'GIF' | translate}}</button>
+      <button class="osem-button share-type-button" (click)="shareDynamicMap()">{{'DYNAMIC_MAP' | translate}}</button>
     </div>
   </div>
-  <div class="share-vis-box">
-    <div class="share-vis-options" id="share-vis-options-link">
-      <share-buttons id="share-osm-link-copy" theme="circles-dark" [include]="['copy']" [showIcon]="true"
-        [showText]="false" url="{{URL}}" description="OpenSenseMap">
-      </share-buttons>
-      <share-buttons id="share-osm-link-social" theme="circles-dark"
-        [include]="['facebook', 'linkedin', 'telegram', 'whatsapp']" [showIcon]="true" [showText]="false" url="{{URL}}"
-        description="OpenSenseMap">
-      </share-buttons>
-    </div>
-    <div class="share-vis-options" id="share-vis-options-static">
-      <div class="share-vis-options-static-elem">
-        <p>{{'Do you want to include a legend?' | translate }}</p>
-        <label class="switch">
-          <input id="legendSwitch" type="checkbox">
-          <span class="slider round"></span>
-        </label>
-      </div>
-      <div class="share-vis-options-static-elem">
-        <p>{{'Which format do you want to export?' | translate }}</p>
-        <div clas="field" title="{{'PNG' | translate}}">
-          <input class="is-checkradio is-small is-primary" id="png" type="radio" name="format" checked>
-          <label for="png">{{'PNG' | translate}}</label>
-        </div>
-        <div clas="field" title="{{'PDF' | translate}}">
-          <input class="is-checkradio is-small is-primary" id="pdf" type="radio" name="format">
-          <label for="pdf">{{'PDF' | translate}}</label>
-        </div>
-      </div>
-      <div class="share-vis-options-static-elem">
-        <button class="osem-button" id="exportStaticMap">{{'EXPORT' | translate}}</button>
-      </div>
-      <div class="share-vis-options-static-elem" id="static-share-buttons">
-        <share-buttons id="share-osm-static" theme="circles-dark"
-          [include]="['facebook', 'linkedin', 'telegram', 'whatsapp']" [showIcon]="true" [showText]="false">
+  <div class="share-vis-section">
+    <div class="share-vis-options" id="share-vis-options-web">
+      <div class="display-margin" id="share-buttons-web">
+        <share-buttons theme="circles-dark" [include]="['copy', 'facebook', 'linkedin', 'telegram', 'whatsapp']"
+          [showIcon]="true" [showText]="false" url="{{URL}}" description="OpenSenseMap">
         </share-buttons>
       </div>
     </div>
-    <div class="share-vis-options" id="share-vis-options-gif">
-      <p>Options for GIF</p>
+    <div class="share-vis-options" id="share-vis-options-static">
+      <div class="share-vis-options-static-selection display-margin">
+        <p>{{'LEGEND_INCLUDE' | translate }}</p>
+        <div class="radio-container">
+          <input class="is-checkradio is-small is-primary" id="radio-legend-yes" type="radio" name="radio-legend"
+            checked>
+          <label for="radio-legend-yes">{{'LEGEND_INCLUDE_YES' | translate}}</label>
+        </div>
+        <div class="radio-container">
+          <input class="is-checkradio is-small is-primary" id="radio-legend-no" type="radio" name="radio-legend">
+          <label for="radio-legend-no">{{'LEGEND_INCLUDE_NO' | translate}}</label>
+        </div>
+      </div>
+      <div class="share-vis-options-static-selection display-margin">
+        <p>{{'EXPORT_FORMAT' | translate }}</p>
+        <div class="radio-container">
+          <input class="is-checkradio is-small is-primary" id="radio-format-png" type="radio" name="radio-format"
+            checked>
+          <label for="radio-format-png">{{'EXPORT_FORMAT_IMAGE' | translate}}</label>
+        </div>
+        <div class="radio-container">
+          <input class="is-checkradio is-small is-primary" id="radio-format-pdf" type="radio" name="radio-format">
+          <label for="radio-format-pdf">{{'EXPORT_FORMAT_DOCUMENT' | translate}}</label>
+        </div>
+      </div>
+      <div class="share-vis-options-static-export display-margin">
+        <button class="osem-button" id="button-export-static">{{'EXPORT' | translate}}</button>
+      </div>
+      <div class="display-margin" id="share-buttons-static">
+        <share-buttons theme="circles-dark" [include]="['facebook', 'linkedin', 'telegram', 'whatsapp']"
+          [showIcon]="true" [showText]="false">
+        </share-buttons>
+      </div>
+    </div>
+    <div class="share-vis-options" id="share-vis-options-dynamic">
+      <p>PLACEHOLDER</p>
     </div>
   </div>
 </div>

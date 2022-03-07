@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MapService } from '../../explore/services/map.service';
 import { UiQuery } from '../../../models/ui/state/ui.query';
 import { ActivatedRoute } from '@angular/router';
@@ -19,21 +19,23 @@ export class ShareVisComponent implements OnInit {
   baseURL = 'http://localhost:4200';
   URL = this.baseURL;
 
-  @Output() visShared = new EventEmitter();
-  @Output() staticMapShared = new EventEmitter();
-  @Output() gifShared = new EventEmitter();
+  optionsContainerWeb;
+  optionsContainerStatic;
+  optionsContainerDynamic;
 
   constructor(private activatedRoute: ActivatedRoute, private uiQuery: UiQuery, private mapService: MapService) {
   }
 
   ngOnInit() {
-
+    this.optionsContainerWeb = $('#share-vis-options-web');
+    this.optionsContainerStatic = $('#share-vis-options-static');
+    this.optionsContainerDynamic = $('#share-vis-options-dynamic');
   }
 
   shareWebMap() {
-    $('#share-vis-options-static').removeClass('active');
-    $('#share-vis-options-gif').removeClass('active');
-    $('#share-vis-options-link').addClass('active');
+    this.optionsContainerStatic.removeClass('active');
+    this.optionsContainerDynamic.removeClass('active');
+    this.optionsContainerWeb.addClass('active');
 
     const bbox = this.mapService.getBounds();
     console.log('BBOX', bbox);
@@ -49,29 +51,27 @@ export class ShareVisComponent implements OnInit {
   }
 
   shareStaticMap() {
-    $('#share-vis-options-link').removeClass('active');
-    $('#share-vis-options-gif').removeClass('active');
-    $('#share-vis-options-static').addClass('active');
+    this.optionsContainerWeb.removeClass('active');
+    this.optionsContainerDynamic.removeClass('active');
+    this.optionsContainerStatic.addClass('active');
 
-    $('#exportStaticMap').on('click', () => {
+    $('#button-export-static').on('click', () => {
       let format;
 
-      if ($('#png:checked').length != 0) {
-        format = 'img';
+      if ($('#radio-format-png:checked').length != 0) {
+        format = 'png';
       } else {
         format = 'pdf';
       }
 
       this.printMap(format);
-
-      $('#static-share-buttons').addClass('active');
     });
   }
 
-  shareGIF() {
-    $('#share-vis-options-link').removeClass('active');
-    $('#share-vis-options-static').removeClass('active');
-    $('#share-vis-options-gif').addClass('active');
+  shareDynamicMap() {
+    this.optionsContainerWeb.removeClass('active');
+    this.optionsContainerStatic.removeClass('active');
+    this.optionsContainerDynamic.addClass('active');
   }
 
   printMap(format) {
@@ -79,10 +79,11 @@ export class ShareVisComponent implements OnInit {
     let mapContainer = $('#map'); //get the map's container
     let mapLegend = $('#legend').clone(true); //clone the map legend
 
+    //Remove the statistics part from the legend for active boxes layer
     if ($('.stats-headline').length != 0) {
-      mapLegend.children().children().children().children().children().last().remove(); //remove the statistics part from the legend
+      mapLegend.children().children().children().children().children().last().remove();
     } else {
-      //Fix legend gradient bar
+      //Fix legend gradient bar for phenomena
       let gradient = mapLegend.children().children().children().children().last();
       gradient.css('height', '100%');
       gradient.css('margin', '0');
@@ -101,7 +102,7 @@ export class ShareVisComponent implements OnInit {
     legend.css('background', 'white'); //legend background color
     legend.css('opacity', '0.7'); //legend background opacity
 
-    if ($('#legendSwitch:checked').length != 0) {
+    if ($('#radio-legend-yes:checked').length != 0) {
       mapContainer.append(legend); //add legend to map
     }
     //once the map is fully rendered
@@ -109,15 +110,15 @@ export class ShareVisComponent implements OnInit {
       //convert the html container into a canvas element
       html2canvas(mapContainer[0]).then(function (canvas) {
         //save image (PNG)
-        if (format == 'img') {
-          console.log("Printing image ...");
+        if (format == 'png') {
+          //console.log("Printing image ...");
           canvas.toBlob((blob) => {
             saveAs(blob, 'vis.png');
           });
         }
         //save PDF
         if (format == 'pdf') {
-          console.log('Printing PDF...');
+          //console.log('Printing PDF...');
           const contentDataURL = canvas.toDataURL('image/png');
           let imgWidth = 297;
           let imgHeight = canvas.height * imgWidth / canvas.width;

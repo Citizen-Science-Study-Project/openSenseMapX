@@ -1033,8 +1033,4 @@ export class MapService {
   //   const features = this.map.queryRenderedFeatures([[0,0],[180,180]], { layers: ['boxes-cluster', 'base-layer'] })
   //   console.log(features)
   // }
-
-  getMap() {
-    return this.map;
-  }
 }
