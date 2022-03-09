@@ -1033,4 +1033,22 @@ export class MapService {
   //   const features = this.map.queryRenderedFeatures([[0,0],[180,180]], { layers: ['boxes-cluster', 'base-layer'] })
   //   console.log(features)
   // }
+
+  testfunction() {
+    let minDate = Date.parse((new Date('2019-07-29')).toDateString());
+    let maxDate = Date.parse((new Date('2020-01-01')).toDateString());
+    let features = this.map.queryRenderedFeatures({ layers: ['base-layer'] });
+    let filteredData = [];
+    features.forEach(feature => {
+      //test-wise: only include 4 measurements between 2019-07-29 and 2020-01-01 (temperature)
+      let measurementDate = Date.parse((new Date(feature.properties.updatedAt)).toDateString());
+
+      if ((measurementDate >= minDate) && (measurementDate <= maxDate)) {
+        filteredData.push(feature);
+      }
+    });
+    //TO DO: Update Map Layer for each time step and export an image
+    let filteredFeatures = { type: 'FeatureCollection', features: filteredData };
+    console.log(this.map.getStyle().layers);
+  }
 }

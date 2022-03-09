@@ -72,6 +72,10 @@ export class ShareVisComponent implements OnInit {
     this.optionsContainerWeb.removeClass('active');
     this.optionsContainerStatic.removeClass('active');
     this.optionsContainerDynamic.addClass('active');
+
+    $('#button-export-dynamic').on('click', () => {
+      console.log(this.mapService.testfunction());
+    });
   }
 
   printMap(format) {

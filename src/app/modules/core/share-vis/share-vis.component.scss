@@ -2,6 +2,10 @@
   width: 100%;
 }
 
+.width-25 {
+  width: 25%;
+}
+
 .display-margin {
   display: inline-block;
   margin: 2.5%;
@@ -9,10 +13,6 @@
 
 .share-vis-section {
     text-align: center;
-}
-
-.share-vis-selection {
-    width: 25%;
 }
 
 .share-vis-preview {
@@ -48,8 +48,4 @@ img {
 
 .radio-container {
   display: inline-block;
-}
-
-.share-vis-options-static-export {
-  width: 25%;
 }

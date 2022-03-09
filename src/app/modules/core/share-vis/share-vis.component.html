@@ -1,19 +1,19 @@
 <div class="osem-padding">
   <h1 class="title is-1">{{'SHARE_VIS' | translate}}</h1>
   <div class="share-vis-section">
-    <div class="share-vis-selection display-margin">
+    <div class="width-25 display-margin">
       <div class="share-vis-preview">
         <img src="/assets/img/test/share-preview-webmap.jpeg">
       </div>
       <button class="osem-button share-type-button" (click)="shareWebMap()">{{'WEB_MAP' | translate}}</button>
     </div>
-    <div class="share-vis-selection display-margin">
+    <div class="width-25 display-margin">
       <div class="share-vis-preview">
         <img src="/assets/img/test/share-preview-pdf.jpeg">
       </div>
       <button class="osem-button share-type-button" (click)="shareStaticMap()">{{'STATIC_MAP' | translate}}</button>
     </div>
-    <div class="share-vis-selection display-margin">
+    <div class="width-25 display-margin">
       <div class="share-vis-preview">
         <img src="/assets/img/test/share-preview-gif.jpeg">
       </div>
@@ -53,7 +53,7 @@
           <label for="radio-format-pdf">{{'EXPORT_FORMAT_DOCUMENT' | translate}}</label>
         </div>
       </div>
-      <div class="share-vis-options-static-export display-margin">
+      <div class="width-25 display-margin">
         <button class="osem-button" id="button-export-static">{{'EXPORT' | translate}}</button>
       </div>
       <div class="display-margin" id="share-buttons-static">
@@ -63,7 +63,14 @@
       </div>
     </div>
     <div class="share-vis-options" id="share-vis-options-dynamic">
-      <p>PLACEHOLDER</p>
+      <div class="width-25 display-margin">
+        <button class="osem-button" id="button-export-dynamic">{{'EXPORT' | translate}}</button>
+      </div>
+      <div class="display-margin" id="share-buttons-dynamic">
+        <share-buttons theme="circles-dark" [include]="['facebook', 'linkedin', 'telegram', 'whatsapp']"
+          [showIcon]="true" [showText]="false">
+        </share-buttons>
+      </div>
     </div>
   </div>
 </div>
