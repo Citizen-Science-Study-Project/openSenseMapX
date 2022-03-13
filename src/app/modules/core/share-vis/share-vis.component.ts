@@ -82,6 +82,9 @@ export class ShareVisComponent implements OnInit {
     let renderMap = this.mapService.map; //make a copy of the map
     let mapContainer = $('#map'); //get the map's container
     let mapLegend = $('#legend').clone(true); //clone the map legend
+    let dateString = $('.datetime-flex').first().clone(true); //clone the date string of the filter menu
+    let mapLogo = $('.logo').first().clone(true); //clone the OSM logo
+    let phenoName = $('.pheno-name').first().clone(true);
 
     //Remove the statistics part from the legend for active boxes layer
     if ($('.stats-headline').length != 0) {
@@ -99,16 +102,45 @@ export class ShareVisComponent implements OnInit {
 
     var legend = $('<div></div>'); //create a new div container for the legend
     legend.addClass('map-overlay'); //add a new mapbox overlay
+    legend.addClass('osem-padding'); //add padding
+    legend.append(phenoName); //add active phenomenon
     legend.append(mapLegend); //copy the existing legend to the new one
     legend.css('position', 'absolute'); //legend position
-    legend.css('left', '0');
-    legend.css('top', '0');
+    legend.css('left', '2.5%');
+    legend.css('top', '2.5%');
     legend.css('background', 'white'); //legend background color
     legend.css('opacity', '0.7'); //legend background opacity
+    legend.css('font-size', '1.5em');
+    legend.css('border-radius', '25px'); //rounded corners
 
     if ($('#radio-legend-yes:checked').length != 0) {
       mapContainer.append(legend); //add legend to map
     }
+
+    var datetime = $('<div></div>'); //create a new div container for the datetime
+    datetime.addClass('map-overlay'); //add a new mapbox overlay
+    datetime.addClass('osem-padding'); //add padding
+    datetime.append(dateString); //copy the existing datetime to the new one
+    datetime.css('position', 'absolute'); //datetime position
+    datetime.css('left', '37.5%');
+    datetime.css('top', '2.5%');
+    datetime.css('background', 'green'); //datetime background color
+    datetime.css('color', 'white'); //text color
+    datetime.css('opacity', '0.7'); //datetime background opacity
+    datetime.css('font-size', '1.5em');
+    datetime.css('border-radius', '25px'); //rounded corners
+    mapContainer.append(datetime);
+
+    var logo = $('<div></div>'); //create a new div container for the logo
+    logo.addClass('map-overlay'); //add a new mapbox overlay
+    logo.addClass('osem-padding'); //add padding
+    logo.append(mapLogo); //copy the existing logo to the new one
+    logo.css('position', 'absolute'); //logo position
+    logo.css('right', '2.5%');
+    logo.css('top', '2.5%');
+    logo.css('opacity', '0.7'); //logo background opacity
+    mapContainer.append(logo);
+
     //once the map is fully rendered
     renderMap.once('idle', () => {
       //convert the html container into a canvas element
@@ -143,6 +175,8 @@ export class ShareVisComponent implements OnInit {
 
     function restoreMap() {
       legend.remove(); //remove legend from the map
+      datetime.remove();
+      logo.remove();
       $('.mapboxgl-ctrl-top-right').first().css('visibility', 'visible'); //restore map controls
       $('.mapbox-improve-map').first().text(improveMapText); //restore improve map text
       renderMap.setZoom(renderMap.getZoom()); //Fix to print multiple times for the same view
