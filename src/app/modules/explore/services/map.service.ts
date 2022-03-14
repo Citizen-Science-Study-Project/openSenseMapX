@@ -20,6 +20,17 @@ import * as saveAs from 'file-saver';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import * as $ from 'jquery';
+import { Gif } from 'make-a-gif';
+
+// import * as gifEncoder from 'gif-encoder-2';
+import GIFEncoder from 'gif-encoder-2';
+import { createCanvas } from 'canvas';
+// import { createCanvas, Image } from 'canvas';
+// import { createWriteStream, readdir } from 'fs';
+// import { promisify } from 'util';
+// import path from 'path';
+
+// const path = require('path');
 
 @Injectable({
   providedIn: 'root'
@@ -66,6 +77,9 @@ export class MapService {
   mouseLeaveFunction;
   activatePopupTimer;
   deactivatePopupTimer;
+
+  screen = 'blabla';
+  // imagenCreada = 'bla'
 
   constructor(
     private uiService: UiService,
@@ -126,6 +140,7 @@ export class MapService {
 
     // subscribes to the Pheno, Filter and Date selection to update the sources accordingly, subscribes to Layers once sources are done
     this.dataSub = combineLatest(this.selectedPheno$, this.filters$, this.dateRangeData$, this.hideOutliers$).subscribe(res => {
+      console.log("change date maps", res[2])
       if (res[0]){
         let hideOutliersData, filteredData;
 
@@ -1055,7 +1070,7 @@ export class MapService {
 
     let improveMapText = $('.mapbox-improve-map').first().text(); //save the improve map text
 
-    hideMapElements(); //Hide elements from the map that should not be printed
+    // hideMapElements(); //Hide elements from the map that should not be printed
 
     var legend = $('<div></div>'); //create a new div container for the legend
     legend.addClass('map-overlay'); //add a new mapbox overlay
@@ -1092,14 +1107,198 @@ export class MapService {
           pdf.save('vis.pdf');
         }
       });
-      restoreMap(); //restore the map defaults
+      // restoreMap(); //restore the map defaults
     });
-    renderMap.setZoom(renderMap.getZoom()); //Fix to trigger the map's idle event
+    // renderMap.setZoom(renderMap.getZoom()); //Fix to trigger the map's idle event
 
     function hideMapElements() {
       $('.mapboxgl-ctrl-top-right').first().css('visibility', 'hidden'); //hide map controls
       $('.mapbox-improve-map').first().text(''); //hide improve map text
     }
+
+    function restoreMap() {
+      legend.remove(); //remove legend from the map
+      $('.mapboxgl-ctrl-top-right').first().css('visibility', 'visible'); //restore map controls
+      $('.mapbox-improve-map').first().text(improveMapText); //restore improve map text
+      renderMap.setZoom(renderMap.getZoom()); //Fix to print multiple times for the same view
+    }
+  }
+
+  screenshot(id) {
+
+    let renderMap = this.map; //make a copy of the map
+    let mapContainer = $('#map'); //get the map's container
+    let mapLegend = $('#legend').clone(true); //clone the map legend
+
+    if ($('.stats-headline').length != 0) {
+      mapLegend.children().children().children().children().children().last().remove(); //remove the statistics part from the legend
+    } else {
+      //Fix legend gradient bar
+      let gradient = mapLegend.children().children().children().children().last();
+      gradient.css('height', '100%');
+      gradient.css('margin', '0');
+    }
+
+    let improveMapText = $('.mapbox-improve-map').first().text(); //save the improve map text
+
+    // hideMapElements(); //Hide elements from the map that should not be printed
+
+    var legend = $('<div></div>'); //create a new div container for the legend
+    legend.addClass('map-overlay'); //add a new mapbox overlay
+    legend.append(mapLegend); //copy the existing legend to the new one
+    legend.css('position', 'absolute'); //legend position
+    legend.css('left', '0');
+    legend.css('top', '0');
+    legend.css('background', 'white'); //legend background color
+    legend.css('opacity', '0.7'); //legend background opacity
+
+    if ($('#legendSwitch:checked').length != 0) {
+      mapContainer.append(legend); //add legend to map
+    }
+    let blobs = null;
+    let that = this;
+
+    const size = 200
+    // new gifEncoder()
+    const width = 500
+    const height = 500
+    const encoder = new GIFEncoder(width, height);
+    encoder.start();
+    encoder.setDelay(200);
+
+    const canvas = createCanvas(width, height);
+    const ctx = canvas.getContext('2d');
+
+    const image = new Image();
+    image.onload = () => {
+      ctx.drawImage(image, 0, 0);
+      encoder.addFrame(ctx);
+      // resolve3()
+    };
+    console.log('image', image)
+    image.src = 'http://localhost:4200/assets/img/result.gif';
+
+    // (async () => {
+    //   // files = []
+    //   // for (const file of files) {
+    //     await new Promise((resolve3) => {
+    //       const image = new Image();
+    //       image.onload = () => {
+    //         ctx.drawImage(image, 0, 0);
+    //         encoder.addFrame(ctx);
+    //         // resolve3()
+    //       };
+    //       // image.src = path.join(imagesFolder, file)
+    //     });
+    //   // }
+    // });
+
+    // ;(async () => {
+    //   // We instance the class Gif and give the proportions of width 500 and height 500
+    //
+    //   const Image = new Gif(500, 500)
+    //     // This is the delay between frames
+    //     .setDelay(1500)
+    //     // We set 3 images that will be 3 frames
+    //     .setFrames([
+    //       'http://localhost:4200/assets/img/QnaDhkD.png',
+    //       'http://localhost:4200/assets/img/8bazwQp.png',
+    //       'http://localhost:4200/assets/img/wPMwvr5.png'
+    //     ]);
+    //
+    //   console.log('Image', Image, typeof Image)
+    //   // // Render the image, it will return a Buffer or it will give an error if anything goes wrong
+    //   const Render = await Image.render().catch((e) => console.error(e));
+    //   console.log('Render', Render);
+    //   // if (!Render) return
+    //   //
+    //   // //Writes the gif in this folder
+    //   // await fs.writeFile(join(__dirname, 'make-a-gif.gif'), Render)
+    // })();
+
+    // (async function asyncCall() {
+    //   const gif = new Gif(200)
+    //     //This is the delay between frames
+    //     .setDelay(1500)
+    //     //We set 3 images that will be 3 frames
+    //     .setFrames([
+    //       'https://i.imgur.com/QnaDhkD.png',
+    //       'https://i.imgur.com/8bazwQp.png',
+    //       'https://i.imgur.com/wPMwvr5.png'
+    //     ]);
+    //   console.log('gif', gif)
+    //
+    //   //Render the image, it will return a Buffer or it will give an error if anything goes wrong
+    //   const Render = await gif.render().catch((e) => console.error(e))
+    //   if (!Render)
+    //     console.log("ERROR render")
+    //   console.log("Render", Render)
+    // })()
+
+    renderMap.once('idle', () => {
+      let html2obj = html2canvas(mapContainer[0]);
+      let queue = html2obj.then(canvas => {
+        canvas.toBlob(blob => {
+          //
+          //     // saveAs(blob, 'vis.png');
+          saveAs(blob, `vis_${id}.png`);
+          //     that.screen = 'mafe';
+          //     // this.screen = blob;
+        });
+      });
+      console.log('queue', queue);
+    });
+    // let bl = queue.then(canvas => {
+    //   // console.log('q.toDataURL(\'image/png\')', q.toDataURL('image/png'));
+    //   // return (q.toDataURL('image/png'))
+    //   // q.toBlob((blob) => {
+    //   //   let file = new File([blob], "fileName.jpg", { type: "image/jpeg" })
+    //   // }, 'image/jpeg');
+    //   canvas.toBlob(blob => {
+    //   //
+    //   //     // saveAs(blob, 'vis.png');
+    //       saveAs(blob, `vis_${id}.png`);
+    //   //     that.screen = 'mafe';
+    //   //     // this.screen = blob;
+    //   });
+    // });
+    // console.log('bl', typeof(bl), bl);
+    // saveAs(blob, 'vis.png');
+
+    // var canvas = html2obj.render(queue);
+    // var data = canvas.toDataURL('image/jpeg');
+
+    // //once the map is fully rendered
+    // renderMap.once('idle', () => {
+    //   //convert the html container into a canvas element
+    //   // html2canvas(mapContainer[0]).then( canvas => {
+    //   //   // this.uiService.setImages(canvas);
+    //   //   // arr_bolbs.push(canvas)
+    //   //   that.screen = '123';
+    //   //   // this.imagenCreada = canvas.toDataURL();
+    //   //   canvas.toBlob(blob => {
+    //   //
+    //   //     // saveAs(blob, 'vis.png');
+    //   //     saveAs(blob, `vis_${id}.png`);
+    //   //     that.screen = 'mafe';
+    //   //     // this.screen = blob;
+    //   //   });
+    //   // });
+    //   // var html2obj = html2canvas(mapContainer[0]);
+    //   // var queue  = html2obj.parse();
+    //   // var canvas = html2obj.render(queue);
+    //   // var data = canvas.toDataURL('image/jpeg');
+    //   // console.log('data', data)
+    //   restoreMap(); //restore the map defaults
+    // });
+    // // // return this.screen;
+    // // // return blobs;
+    // renderMap.setZoom(renderMap.getZoom()); //Fix to trigger the map's idle event
+
+    // // function hideMapElements() {
+    // //   $('.mapboxgl-ctrl-top-right').first().css('visibility', 'hidden'); //hide map controls
+    // //   $('.mapbox-improve-map').first().text(''); //hide improve map text
+    // // }
 
     function restoreMap() {
       legend.remove(); //remove legend from the map

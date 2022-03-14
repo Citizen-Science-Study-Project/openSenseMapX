@@ -1,4 +1,4 @@
-declare var process: Process;
+declare var processOSM: Process;
 
 interface Process {
     env: Env
@@ -13,5 +13,5 @@ interface Env {
 }
 
 interface GlobalEnvironment{
-    process: Process;
+    processOSM: Process;
 }
