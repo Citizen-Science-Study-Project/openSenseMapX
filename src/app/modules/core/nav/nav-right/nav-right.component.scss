@@ -182,3 +182,56 @@ input:checked + .slider:before {
 .btn:hover {
   color: $primaryColor;
 }
+
+
+
+@import '../../../../../styles.scss';
+
+.share-vis-box {
+    text-align: center;
+}
+
+.share-vis-options, #static-share-buttons {
+  display: none;
+}
+
+.share-vis-options.active, #static-share-buttons.active {
+  display: block;
+}
+
+.share-vis-elem {
+    display: inline-block;
+    width: 25%;
+    margin: 2.5%;
+}
+
+.share-vis-preview {
+    border:2.5px solid black;
+    overflow: hidden;
+}
+
+.share-type-button {
+    margin-top: 10%;
+    width: 100%;
+}
+
+.share-vis-preview, img {
+    border-radius: 10px;
+}
+
+img {
+    display: flex;
+    padding: 5%;
+}
+
+#exportStaticMap {
+  width: 25%;
+}
+
+#legendSwitch:checked + .slider {
+  background: $primaryColor;
+}
+
+.share-vis-options-static-elem {
+  padding-top: 2.5%;
+}

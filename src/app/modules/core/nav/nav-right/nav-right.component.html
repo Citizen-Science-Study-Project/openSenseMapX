@@ -75,5 +75,67 @@
 </div>
 
 
-<div id="sharing" class="osem-box-shadow-basic" *ngIf="sharing" [@slideInOutMenu]>
+<div id="settings" class="osem-box-shadow-basic" *ngIf="sharing" [@slideInOutMenu]>
+  <div class="share-vis-box">
+    <div class="share-vis-elem">
+      <div class="share-vis-preview">
+        <img src="/assets/img/test/share-preview-webmap.jpeg">
+      </div>
+      <button class="osem-button share-type-button" (click)="shareWebMap()">{{'WEB_MAP' | translate}}</button>
+    </div>
+    <div class="share-vis-elem">
+      <div class="share-vis-preview">
+        <img src="/assets/img/test/share-preview-pdf.jpeg">
+      </div>
+      <button class="osem-button share-type-button" (click)="shareStaticMap()">{{'STATIC MAP' | translate}}</button>
+    </div>
+    <div class="share-vis-elem">
+      <div class="share-vis-preview">
+        <img src="/assets/img/test/share-preview-gif.jpeg">
+      </div>
+      <button class="osem-button share-type-button" (click)="shareGIF()">{{'GIF' | translate}}</button>
+    </div>
+  </div>
+  <div class="share-vis-box">
+    <div class="share-vis-options" id="share-vis-options-link">
+      <share-buttons id="share-osm-link-copy" theme="circles-dark" [include]="['copy']" [showIcon]="true"
+        [showText]="false" url="{{URL}}" description="OpenSenseMap">
+      </share-buttons>
+      <share-buttons id="share-osm-link-social" theme="circles-dark"
+        [include]="['facebook', 'linkedin', 'telegram', 'whatsapp']" [showIcon]="true" [showText]="false" url="{{URL}}"
+        description="OpenSenseMap">
+      </share-buttons>
+    </div>
+    <div class="share-vis-options" id="share-vis-options-static">
+      <div class="share-vis-options-static-elem">
+        <p>{{'Do you want to include a legend?' | translate }}</p>
+        <label class="switch">
+          <input id="legendSwitch" type="checkbox">
+          <span class="slider round"></span>
+        </label>
+      </div>
+      <div class="share-vis-options-static-elem">
+        <p>{{'Which format do you want to export?' | translate }}</p>
+        <div clas="field" title="{{'PNG' | translate}}">
+          <input class="is-checkradio is-small is-primary" id="png" type="radio" name="format" checked>
+          <label for="png">{{'PNG' | translate}}</label>
+        </div>
+        <div clas="field" title="{{'PDF' | translate}}">
+          <input class="is-checkradio is-small is-primary" id="pdf" type="radio" name="format">
+          <label for="pdf">{{'PDF' | translate}}</label>
+        </div>
+      </div>
+      <div class="share-vis-options-static-elem">
+        <button class="osem-button" id="exportStaticMap">{{'EXPORT' | translate}}</button>
+      </div>
+      <div class="share-vis-options-static-elem" id="static-share-buttons">
+        <share-buttons id="share-osm-static" theme="circles-dark"
+          [include]="['facebook', 'linkedin', 'telegram', 'whatsapp']" [showIcon]="true" [showText]="false">
+        </share-buttons>
+      </div>
+    </div>
+    <div class="share-vis-options" id="share-vis-options-gif">
+      <p>Options for GIF</p>
+    </div>
+  </div>
 </div>
