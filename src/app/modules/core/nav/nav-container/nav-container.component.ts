@@ -13,6 +13,7 @@ import { UiQuery } from 'src/app/models/ui/state/ui.query';
 export class NavContainerComponent implements OnInit {
 
   settings: Boolean = false;
+  sharing: Boolean = false;
 
   language$ = this.uiQuery.selectLanguage$;
   theme$ = this.uiQuery.selectTheme$;
@@ -43,6 +44,10 @@ export class NavContainerComponent implements OnInit {
 
   toggleSettings() {
     this.settings = !this.settings;
+  }
+
+  toggleShare() {
+    this.sharing = !this.sharing;
   }
 
   toggleClustering() {

@@ -17,6 +17,9 @@
     <div class="nav-item" (click)="toggleSettings()">
       <i class="fa fa-cogs"></i>
     </div>
+    <div class="nav-item" (click)="toggleShare()">
+      <i class="fa fa-share-alt"></i>
+    </div>
     <div class="nav-item" [routerLink]="[{ outlets: { sidebar: ['m'] }}]">
       <i class="fa fa-bars"></i>
     </div>
@@ -69,4 +72,8 @@
     </div>
   </div>
 
+</div>
+
+
+<div id="sharing" class="osem-box-shadow-basic" *ngIf="sharing" [@slideInOutMenu]>
 </div>

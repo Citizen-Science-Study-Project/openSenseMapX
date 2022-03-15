@@ -13,12 +13,14 @@ export class NavRightComponent implements OnInit {
   @Output() themeToggled = new EventEmitter();
   @Output() languageToggled = new EventEmitter();
   @Output() settingsToggled = new EventEmitter();
+  @Output() shareToggled = new EventEmitter();
   @Output() clusteringToggled = new EventEmitter();
   @Output() hideOutliersToggled = new EventEmitter();
 
   @Input() theme;
   @Input() language;
   @Input() settings;
+  @Input() sharing;
   @Input() user;
   @Input() clustering;
   @Input() hideOutliers;
@@ -47,6 +49,10 @@ export class NavRightComponent implements OnInit {
 
   toggleSettings() {
     this.settingsToggled.emit();
+  }
+
+  toggleShare() {
+    this.shareToggled.emit();
   }
 
   toggleClustering() {
