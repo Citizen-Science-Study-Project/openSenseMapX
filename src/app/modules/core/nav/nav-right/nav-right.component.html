@@ -49,23 +49,23 @@
   </div>
   <h2 class="pt-5 underline">{{'MAP_SETTINGS' | translate}}</h2>
   <div class="option-container">
-    <div class="checkbox-container mouse-active py-4" (click)="toggleClustering()"
+    <div class="checkbox-container mouse-active py-2"
          title="{{'TOGGLE_CLUSTERING' | translate}}">
-      <div class="checkbox">
-        <i *ngIf="!clustering" class="fa fa-square"></i>
-        <i *ngIf="clustering" class="fa fa-check-square"></i>
-      </div>
+      <label class="switch">
+        <input id="clustering" type="checkbox" (click)="toggleClustering()">
+        <span class="slider round"></span>
+      </label>
       <span>{{'CLUSTERING' | translate}}</span>
     </div>
-  </div>
-  <div class="option-container">
-    <div class="checkbox-container mouse-active py-4" (click)="toggleHideOutliers()"
-         title="{{'TOGGLE_HIDE_OUTLIERS' | translate}}">
-      <div class="checkbox">
-        <i *ngIf="!hideOutliers" class="fa fa-square"></i>
-        <i *ngIf="hideOutliers" class="fa fa-check-square"></i>
-      </div>
+    <div class="checkbox-container mouse-active py-4">
+      <label class="switch">
+        <input id="hideOutliers" type="checkbox" (click)="toggleHideOutliers()">
+        <span class="slider round"></span>
+      </label>
       <span>{{'HIDE_OUTLIERS' | translate}}</span>
+      <button class="btn" title="{{'TOGGLE_HIDE_OUTLIERS' | translate}}">
+        <i class="fa fa-info-circle"></i>
+      </button>
     </div>
   </div>
 

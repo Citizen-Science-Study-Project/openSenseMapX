@@ -51,9 +51,19 @@ export class NavRightComponent implements OnInit {
 
   toggleClustering() {
     this.clusteringToggled.emit();
+
+    const element: any = document.getElementById('clustering');
+    if (element) {
+      element.checked = !this.clustering;
+    }
   }
 
   toggleHideOutliers() {
     this.hideOutliersToggled.emit();
+
+    const element: any = document.getElementById('hideOutliers');
+    if (element) {
+      element.checked = !this.hideOutliers;
+    }
   }
 }
