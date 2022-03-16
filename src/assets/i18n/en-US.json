@@ -76,7 +76,7 @@
 
     "CLUSTERING": "Clustering",
     "HIDE_OUTLIERS": "Hide Outliers",
-    "TOGGLE_HIDE_OUTLIERS": "Cook's distance",
+    "TOGGLE_HIDE_OUTLIERS": "Cook's distance methodology.\nCook, R. Dennis (February 1977).\n\"Detection of Influential Observations in Linear Regression\"",
 
     "COMPARE_MODUS_HEADER": "Compare-Mode",
     "COMPARE_MODUS_HELP": "Click on a marker to compare.",
