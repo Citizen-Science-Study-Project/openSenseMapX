@@ -191,11 +191,11 @@ input:checked + .slider:before {
     text-align: center;
 }
 
-.share-vis-options, #static-share-buttons {
+.share-vis-options {
   display: none;
 }
 
-.share-vis-options.active, #static-share-buttons.active {
+.share-vis-options.active {
   display: block;
 }
 
@@ -212,7 +212,7 @@ input:checked + .slider:before {
 
 .share-type-button {
     margin-top: 10%;
-    width: 100%;
+    //width: 100%;
 }
 
 .share-vis-preview, img {
@@ -224,14 +224,24 @@ img {
     padding: 5%;
 }
 
-#exportStaticMap {
-  width: 25%;
-}
-
 #legendSwitch:checked + .slider {
   background: $primaryColor;
 }
 
-.share-vis-options-static-elem {
-  padding-top: 2.5%;
+.share-vis-options-static-selection {
+  max-width: 45%;
+  vertical-align: top;
+}
+
+.width-25 {
+  width: 30%;
+}
+
+.display-margin {
+  display: inline-block;
+  margin: 2.5%;
+}
+
+.radio-container {
+  display: inline-block;
 }
